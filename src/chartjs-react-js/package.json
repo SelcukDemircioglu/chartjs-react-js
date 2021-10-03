@@ -1,0 +1,19 @@
+{
+  "name": "chartjs-react-js",
+  "version": "1.0.0",
+  "main": "./src/",
+  "homepage": "https://github.com/SelcukDemircioglu/chartjs-react-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SelcukDemircioglu/chartjs-react-js"
+  },
+  "keywords": [
+    "chart.js",
+    "react-chart.js",
+    "chart",
+    "chartjs react"
+  ],
+  "author": "SelcukDemircioglu demirciogluslck@gmail.com",
+  "license": "ISC",
+  "description": "Chart.js Reactjs for Easy Chart"
+}
