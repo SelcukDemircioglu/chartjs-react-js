@@ -4,6 +4,7 @@ import {LegendElement,LegendItem,ChartEvent, ChartTypeRegistry} from 'chart.js';
 
 interface ChartJSProps{
      title?:string;// baslik; this.title //en üst başlık
+     type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
      titleVisible?:boolean;
      backgroundColor?:string|object;
      align?:"start"|"center"|"end"; //this.align
@@ -71,7 +72,7 @@ interface ChartJSProps{
      ticksXcallback?:Function;
      tooltipCallbacks?:Function;
      style?:React.CSSProperties;
-     yazdir?:Number;
+     print?:Number;
      canvasid?:String;
      pointDrop?:boolean;
      layoutPadding?:number|{left:number,right:number,top:number,bottom:number};
@@ -109,10 +110,10 @@ interface  ChartJSNodeProps{
      dataViews?:Array<pointViewProps>;
      hidden?:boolean;
      //line bar  element konfigrasyonlar
-     backgroundColor?:string|Function; //this.backgroundColor,//tarama rengi
-     defaultbackgroundColor?:string; //this.backgroundColor,//tarama rengi
-     borderColor?:string|Function; //this.borderColor,//çizgi rengi
-     borderWidth?:string|Function; //this.borderWidth, //dış çiği kalılığı
+     backgroundColor?:string|Function|Array; //this.backgroundColor,//tarama rengi
+     defaultbackgroundColor?:string|Array; //this.backgroundColor,//tarama rengi
+     borderColor?:string|Function|Array; //this.borderColor,//çizgi rengi
+     borderWidth?:string|Function|Array; //this.borderWidth, //dış çiği kalılığı
      tension?:number; //this.lineSmooth ? 0.4 : 0.000001,//düz ya eğrisel çizgi
      fill?:"origin"| "start"|"end"|boolean; //this.fill,//altı tarama şekli
      spanGaps?: boolean;

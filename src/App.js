@@ -1,15 +1,28 @@
 import React from 'react';
 import { ChartJS,ChartJSNode} from './chartjs-react-js';
+
+const getRandomColor=()=>{
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
  const RandomData=(min,max,count=10)=>{
   var data=[];
   var labels=[];
+  var colors=[];
   for (let index = 0; index < count; index++) {
      data= data.concat(Math.floor(Math.random() * (max - min) ) + min)
      labels=labels.concat("labels"+index);
+     colors.push(getRandomColor());
   }
-  return {data:data,labels:labels};
+  return {data:data,labels:labels,colors:colors};
 }
-export const Colors={
+ 
+const Colors={
   BLACK: '#000',
   WHITE: '#FFF',
   DODGER_BLUE: '#428AF8',
@@ -48,54 +61,209 @@ const dataViews=[
 
 
      return (
-       <div  >
-       <div >
-         <ul>
-           <li>
-
-           </li>
-         </ul>
-       </div>
+       <div style={{
+       display: "flex",
+       flexDirection: "row",
+       flexWrap: "wrap",
+       justifyContent: "center"}}  >
         
          <ChartJS
-           width="100%"
+           width="45vw"
+           height="250px"
            pointText={true}
            yAxesmin={0}
            indexAxis="x"
-           xlabelBackground="#34f3"
-           title="ChartJS"
+           title="ChartJS Pie"
            position="top"
-           backgroundColor="#fffd22"
-           xtitle="xlabel"
-           ytitle="test"
+           type="pie"
            labels={RandomData(5, 50, 5).labels}
+          backgroundColor={Colors.CAMGOBEGI}
          >
-           <ChartJSNode
-             dataViews={[]}
-             order={2}
-             data={RandomData(5, 50, 5).data}
-             rotation={45}
-             pointStyle="rect"
-             bdrColor="black"
-             backgroundColor="#34f"
-             type="bar"
-             label="data"
-           />
+        
            <ChartJSNode
              order={0}
              data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
              rotation={45}
              pointStyle="rect"
-             borderColor="#45f243"
+             type="pie"
+             label="data"
+           />
+          
+         </ChartJS>
+
+         <ChartJS
+           width="45vw"
+           height="250px"
+           pointText={true}
+           yAxesmin={0}
+           indexAxis="x"
+           title="ChartJS Pie"
+           position="top"
+           type="polarArea"
+           labels={RandomData(5, 50, 5).labels}
+          backgroundColor={Colors.CAMGOBEGI}
+         >
+        
+           <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="polarArea"
+             label="data"
+           />
+          
+         </ChartJS>
+         <ChartJS
+           width="45vw"
+           height="250px"
+           pointText={true}
+           yAxesmin={0}
+           indexAxis="x"
+           title="ChartJS Pie"
+           position="top"
+           type="radar"
+           labels={RandomData(5, 50, 5).labels}
+          backgroundColor={Colors.CAMGOBEGI}
+         >
+        
+           <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="radar"
+             label="data"
+           />
+          
+         </ChartJS>
+         <ChartJS
+           width="45vw"
+           height="250px"
+            yAxesmin={0}
+           indexAxis="x"
+           xtitle="xtitle"
+           ytitle="ytitle"
+           title="ChartJS Lİne"
+           position="top"
+           type="line"
+           labels={RandomData(5, 50, 5).labels}
+           backgroundColor={Colors.CAMGOBEGI}
+         >
+        
+           <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.HEADER_COLOR}
+             rotation={45}
+             pointStyle="rect"
              type="line"
              label="data"
            />
+          
+         </ChartJS>
+
+         <ChartJS
+           width="45vw"
+           height="250px"
+            yAxesmin={0}
+           indexAxis="x"
+           xtitle="xtitle"
+           ytitle="ytitle"
+           title="ChartJS Bar"
+           position="top"
+           type="bar"
+           labels={RandomData(5, 50, 5).labels}
+           backgroundColor={Colors.CAMGOBEGI}
+         >
+        
+           <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.HEADER_COLOR}
+             rotation={45}
+             pointStyle="rect"
+             type="bar"
+             label="data"
+           />
+          
+         </ChartJS>
+
+         <ChartJS
+           width="45vw"
+           height="250px"
+            yAxesmin={0}
+           indexAxis="x"
+           xtitle="xtitle"
+           ytitle="ytitle"
+           title="ChartJS Multi Bar"
+           position="top"
+           type="bar"
+           labels={RandomData(5, 50, 5).labels}
+           backgroundColor={Colors.CAMGOBEGI}
+         >
+        
            <ChartJSNode
              order={1}
              data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.HEADER_COLOR}
              rotation={45}
              pointStyle="rect"
-             borderColor="#fb3"
+             type="bar"
+             label="data"
+           />
+               <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.PRİMARY_COLOR}
+             rotation={45}
+             pointStyle="rect"
+             type="line"
+             label="data"
+           />
+         </ChartJS>
+
+         <ChartJS
+           width="45vw"
+           height="500px"
+            yAxesmin={0}
+           indexAxis="y"
+           xtitle="xtitle"
+           ytitle="ytitle"
+           title="ChartJS Multi Bar"
+           position="top"
+           type="bar"
+           labels={RandomData(5, 50, 5).labels}
+           backgroundColor={Colors.CAMGOBEGI}
+
+         >
+        
+           <ChartJSNode
+             
+             order={1}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.HEADER_COLOR}
+             rotation={45}
+             pointStyle="rect"
+             type="bar"
+             label="data"
+            
+           />
+               <ChartJSNode
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={Colors.ORANGE}
+             borderColor={Colors.PRİMARY_COLOR}
+             rotation={45}
+             pointStyle="rect"
              type="line"
              label="data"
            />

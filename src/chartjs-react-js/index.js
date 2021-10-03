@@ -121,7 +121,7 @@ export const ChartJS = (
         mobilMinSize = 1024,
         children,
         ticksYcallback = (val, index, values) => {   return  indexAxis === "y" ? labels[index] : val },
-        ticksXcallback = (val, index, values) => { return  labels[index] },
+        ticksXcallback = (val, index, values) => { return indexAxis === "y"?val: labels[index] },
         tooltipCallbacks = undefined,
         style=undefined,
         canvasid="chartJS",
@@ -285,14 +285,14 @@ export const ChartJS = (
             var id = dataset.id;
             var index = contex.index;
             //sadece görüntieneceklerde value olanları kapatıyoruz
-            var item = dataset.dataViews.filter((v, i) => v.index === index)[0];
+            var item = dataset.dataViews?.filter((v, i) => v.index === index)[0];
             if (item !== undefined) {
                 
                 if(dataset.linearGradient!==undefined){
                     return onlinearGradient(chart,dataset.linearGradient);
                 }
                 
-                return item.backgroundColor;
+                return dataset.backgroundColor;
             }
 
             if(dataset.linearGradient!==undefined){
@@ -328,7 +328,7 @@ export const ChartJS = (
                 type: newdataset.type,
                 label: newdataset.label,
                 data: newdataset.data,
-                backgroundColor: poitnBackground,
+                backgroundColor: newdataset.backgroundColor,
                 hoverOffset: 20,
                 dataViews: newdataset.dataViews,
             }
@@ -384,13 +384,12 @@ export const ChartJS = (
         }
 
         var options = {
-         
             indexAxis: indexAxis,
-            //    responsiveAnimationDuration: 1000,
+            responsiveAnimationDuration: 1000,
              responsive: responsive ,
-            //  maintainAspectRatio: responsive,
-            // aspectRatio: responsive ? 2 : aspectRatio, //yatay ve düşey oranı belitliyor
-            //  devicePixelRatio: responsive ?1:2,
+             maintainAspectRatio: false,
+            aspectRatio: responsive ? 2 : aspectRatio, //yatay ve düşey oranı belitliyor
+             devicePixelRatio: responsive ?1:2,
             layout: {
                 padding: layoutPadding
             },
@@ -509,6 +508,12 @@ export const ChartJS = (
 
 
         return options;
+    }
+
+    function beforePrintHandler () {
+        for (var id in Chart.instances) {
+            Chart.instances[id].resize();
+        }
     }
 
     const ArcXYText = (data) => {
@@ -1200,7 +1205,7 @@ export const ChartJS = (
              chartmain.options=options;
              chartmain.update();
               
-        }
+         }
       
  
     }, [children,width,height,chartjs])
@@ -1231,7 +1236,9 @@ export const ChartJS = (
     
     
     return (
-        <canvas   ref={canvas} id={generateUid()}  height={height.replace("px","")} style={style}   width={width.replace("px","")} ></canvas>
+    <div   style={{position:"relative",height:height,width:width}}>
+        <canvas   ref={canvas} id={generateUid()}    ></canvas>
+     </div>
     )
 
 }
