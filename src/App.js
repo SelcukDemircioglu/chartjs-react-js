@@ -4,7 +4,7 @@ import { ChartJS,ChartJSNode} from './chartjs-react-js';
 const getRandomColor=()=>{
   var letters = '0123456789ABCDEF';
   var color = '#';
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 8; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
@@ -77,7 +77,7 @@ const dataViews=[
            position="top"
            type="pie"
            labels={RandomData(5, 50, 5).labels}
-          backgroundColor={Colors.CAMGOBEGI}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -98,11 +98,11 @@ const dataViews=[
            pointText={true}
            yAxesmin={0}
            indexAxis="x"
-           title="ChartJS Pie"
+           title="ChartJS PolarArea"
            position="top"
            type="polarArea"
            labels={RandomData(5, 50, 5).labels}
-          backgroundColor={Colors.CAMGOBEGI}
+          backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -122,11 +122,11 @@ const dataViews=[
            pointText={true}
            yAxesmin={0}
            indexAxis="x"
-           title="ChartJS Pie"
+           title="ChartJS Radar"
            position="top"
            type="radar"
            labels={RandomData(5, 50, 5).labels}
-          backgroundColor={Colors.CAMGOBEGI}
+          backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -136,9 +136,26 @@ const dataViews=[
              rotation={45}
              pointStyle="rect"
              type="radar"
-             label="data"
+             label="data1"
            />
-          
+            <ChartJSNode
+             order={1}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="radar"
+             label="data2"
+           />
+            <ChartJSNode
+             order={2}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="radar"
+             label="data3"
+           />
          </ChartJS>
          <ChartJS
            width="45vw"
@@ -147,11 +164,11 @@ const dataViews=[
            indexAxis="x"
            xtitle="xtitle"
            ytitle="ytitle"
-           title="ChartJS Lİne"
+           title="ChartJS Line"
            position="top"
            type="line"
            labels={RandomData(5, 50, 5).labels}
-           backgroundColor={Colors.CAMGOBEGI}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -178,7 +195,7 @@ const dataViews=[
            position="top"
            type="bar"
            labels={RandomData(5, 50, 5).labels}
-           backgroundColor={Colors.CAMGOBEGI}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -205,7 +222,7 @@ const dataViews=[
            position="top"
            type="bar"
            labels={RandomData(5, 50, 5).labels}
-           backgroundColor={Colors.CAMGOBEGI}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -241,7 +258,7 @@ const dataViews=[
            position="top"
            type="bar"
            labels={RandomData(5, 50, 5).labels}
-           backgroundColor={Colors.CAMGOBEGI}
+           backgroundColor={Colors.TRANSPARENT}
 
          >
         
