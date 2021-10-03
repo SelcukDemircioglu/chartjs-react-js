@@ -1,8 +1,10 @@
 # chartjs reactjs 
   
+  npm i chartjs-react-js
+  
   Include [chart.js](https://www.npmjs.com/package/chart.js) and [React](https://www.npmjs.com/package/react) as dependencies.
 
-
+  
   
  ## Example  Usage
 
