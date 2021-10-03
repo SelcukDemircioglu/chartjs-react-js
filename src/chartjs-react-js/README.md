@@ -5,7 +5,10 @@
 
   
  ## Example  Usage
-
+  <p align="center">
+    <img src="/src/assets/examples.png">
+  </p>
+  
   Note: --->   type: multi chart only line with bar 
 
  ```jsx
