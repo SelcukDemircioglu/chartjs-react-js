@@ -12,7 +12,7 @@
   
  
   <p align="center">
-    <img src="assets/examples.png">
+    <img src="https://github.com/SelcukDemircioglu/chartjs-react-js/blob/master/src/assets/examples.png">
   </p>
 
    

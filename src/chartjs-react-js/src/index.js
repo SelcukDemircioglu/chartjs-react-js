@@ -1323,11 +1323,18 @@ export const ChartJS =  (
     
     return (
     <div   style={{position:"relative",height:height,width:width}}>
-        {downloadOptions&&<button onClick={()=>{canvasSaveImage()}} className="p-component p-button">JPG</button>}
-        {downloadOptions&&<button onClick={()=>{downloadChartData()}} className="p-component p-button p-ml-1">CSV</button>}
-        {changeTypes&&<button onClick={()=>{setCharttype("line")}} className="p-component p-button p-ml-1">Chart Line</button>}
-        {changeTypes&&<button onClick={()=>{setCharttype("bar")}} className="p-component p-button p-ml-1">Chart Bar</button>}
-         
+        {downloadOptions&&<button onClick={()=>{canvasSaveImage()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >JPG</button>}
+        {downloadOptions&&<button onClick={()=>{downloadChartData()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >CSV</button>}
+        {changeTypes&&<select onChange={(e)=>{setCharttype(e.target.value==="default"?null:e.target.value)}} 
+            style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} 
+          >
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  selected value="line">Line</option>
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="bar">Bar</option>
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="pie">Pie</option>
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="polarArea">PolarArea</option>
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="radar">Radar</option>
+            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="default">default</option>
+        </select>}
         <canvas   ref={canvas} id={generateUid()}    ></canvas>
      </div>
     )

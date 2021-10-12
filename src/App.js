@@ -1,6 +1,5 @@
 import React from 'react';
-import { ChartJS,ChartJSNode} from './chartjs-react-js/lib';
-
+ import {ChartJS,ChartJSNode} from './chartjs-react-js/src/'
 const getRandomColor=()=>{
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -173,7 +172,7 @@ const dataViews=[
             pointText={true}
            downloadOptions
            changeTypes
-           
+
          >
         
            <ChartJSNode
