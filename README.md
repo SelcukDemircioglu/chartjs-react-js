@@ -11,7 +11,7 @@
   Note: --->   type: multi chart only line with bar 
 
   <p align="center">
-    <img src="assets/examples.png">
+    <img src="/src/assets/examples.png">
   </p>
 
  ```jsx
