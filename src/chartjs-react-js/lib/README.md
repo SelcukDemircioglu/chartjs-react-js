@@ -9,15 +9,106 @@
  ## Example  Usage
 
   Note: --->   type: multi chart only line with bar 
-
+  
+ 
   <p align="center">
     <img src="assets/examples.png">
   </p>
 
+   
+   <table style="width: 569px;">
+	<tbody>
+		<tr style="height: 23px;">
+			<td style="width: 62px; height: 23px;">prop</td>
+			<td style="width: 444.016px; height: 23px;">descriptions</td>
+			<td style="width: 269.984px; height: 23px;">type</td>
+		</tr>
+		<tr style="height: 15.5px;">
+			<td style="width: 62px; height: 15.5px;">&nbsp;changeTypes
+				<div>&nbsp;</div>
+			</td>
+			<td style="width: 444.016px; height: 15.5px;">datasets Line or Bar convert chart</td>
+			<td style="width: 269.984px; height: 15.5px;">boolean</td>
+		</tr>
+		<tr style="height: 43px;">
+			<td style="width: 62px; height: 43px;">&nbsp;
+				<div>
+					<div>downloadOptions</div>
+				</div>
+			</td>
+			<td style="width: 444.016px; height: 43px;">&nbsp;data csv and chart image save or download</td>
+			<td style="width: 269.984px; height: 43px;">boolean</td>
+		</tr>
+		<tr style="height: 43px;">
+			<td style="width: 62px; height: 43px;">
+				<div>
+					<div>pointText</div>
+				</div>
+			</td>
+			<td style="width: 444.016px; height: 43px;">
+				<p>Lİne Bar and Pie points add text value&nbsp;</p>
+				<p>Not: only has been&nbsp;dataViews add Points</p>
+				<p>type dataPoint={</p>
+				<div>
+					<div>&nbsp; &nbsp; &nbsp;value?:Number;</div>
+					<div>&nbsp; &nbsp; &nbsp;index?:Number;</div>
+					<div>&nbsp; &nbsp; &nbsp;backgroundColor?:String;</div>
+					<div>&nbsp; &nbsp; &nbsp;dropColor?:String;</div>
+				</div>
+				<p>}</p>
+				<div>
+					<div>dataViews= new Array(dataPoint);</div>
+				</div>
+			</td>
+			<td style="width: 269.984px; height: 43px;">boolean</td>
+		</tr>
+		<tr style="height: 43px;">
+			<td style="width: 62px; height: 43px;">
+				<div>
+					<div>
+						<div>
+							<div>pointDrop</div>
+						</div>
+					</div>
+				</div>
+			</td>
+			<td style="width: 444.016px; height: 43px;">
+				<p>Lİne Bar and Pie points drop efect</p>
+				<p>Not: only has been&nbsp;dataViews add Points</p>
+				<p>type dataPoint={</p>
+				<div>
+					<div>&nbsp; &nbsp; &nbsp;value?:Number;</div>
+					<div>&nbsp; &nbsp; &nbsp;index?:Number;</div>
+					<div>&nbsp; &nbsp; &nbsp;backgroundColor?:String;</div>
+					<div>&nbsp; &nbsp; &nbsp;dropColor?:String;</div>
+				</div>
+				<p>}</p>
+				<div>
+					<div>dataViews= new Array(dataPoint);</div>
+					<div>&nbsp;</div>
+					<div>
+						<div>
+							<div>&lt;ChartJSNode
+								<div>
+									<div>dataViews /&gt;</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>&nbsp;</div>
+				</div>
+			</td>
+			<td style="width: 269.984px; height: 43px;">&nbsp;boolean</td>
+		</tr>
+	</tbody>
+</table>
+   
+   look settings [chart.js information and settings](https://www.chartjs.org/docs/latest/charts)
+   
  ```jsx
  import { ChartJS,ChartJSNode} from './chartjs-react-js';
 
-   <div style={{
+    <div style={{
        display: "flex",
        flexDirection: "row",
        flexWrap: "wrap",
@@ -34,6 +125,9 @@
            type="pie"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+           changeTypes
+           downloadOptions
+          
          >
         
            <ChartJSNode
@@ -125,17 +219,23 @@
            type="line"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+            pointText={true}
+           downloadOptions
+           changeTypes
+           
          >
         
            <ChartJSNode
-             order={0}
-             data={RandomData(5, 50, 5).data}
+             order={1}
+             data={[1,2,3,2,6]}
              backgroundColor={Colors.ORANGE}
              borderColor={Colors.HEADER_COLOR}
              rotation={45}
              pointStyle="rect"
              type="line"
              label="data"
+             dataViews={dataViews}
+             
            />
           
          </ChartJS>

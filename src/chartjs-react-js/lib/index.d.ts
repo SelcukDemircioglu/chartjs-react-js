@@ -1,6 +1,12 @@
 import * as React from 'react';
 import {LegendElement,LegendItem,ChartEvent, ChartTypeRegistry} from 'chart.js';
  
+type methodProps={
+     saveImage:void,
+     printImage:void,
+     dataSave:void
+}
+type methodChange = React.ReactNode | ((props: methodProps) => React.ReactNode);
 
 interface ChartJSProps{
      title?:string;// baslik; this.title //en üst başlık
@@ -88,11 +94,16 @@ interface ChartJSProps{
       usePointStyleLegend?:boolean;
       usePointStyleTooltip?:boolean;
       LegendPointStyle?:Function|"textrect"|'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded' | 'rectRot' | 'star' | 'triangle'|HTMLImageElement|HTMLCanvasElement;
+      onChartOptions(e:methodProps):Function;
+      downloadOptions?:boolean;
+      changeTypes?:boolean;
 }
 
-export  declare class ChartJS extends React.Component<ChartJSProps,any> {}
 
- 
+
+export  declare class ChartJS extends  React.Component<ChartJSProps,any> {}
+
+  
 
 interface pointViewProps {
      value?:Number;

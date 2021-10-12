@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
+import XLSX from 'xlsx';
  
 
 
@@ -53,7 +54,7 @@ export function ChartJSNode({
     return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
  }
 
-export const ChartJS = (
+export const ChartJS =  (
     {
         title = undefined,// basliknull, title //en üst başlık
         titleVisible = true,
@@ -143,11 +144,14 @@ export const ChartJS = (
         usePointStyleLegend=false,
         usePointStyleTooltip=true,
         LegendPointStyle=undefined,
+        onChartOptions=(e)=>{ return e},
+        downloadOptions=false,
+        changeTypes=false
       }
 ) => {
     var id=0;
     
- 
+
 
     const datasets = [];
 
@@ -200,7 +204,13 @@ export const ChartJS = (
         style:style,
         pointDrop:pointDrop,
         layoutPadding:layoutPadding,
-        labelsFont:labelsFont
+        labelsFont:labelsFont,
+        usePointStyleLegend:usePointStyleLegend,
+        usePointStyleTooltip:usePointStyleTooltip,
+        LegendPointStyle:LegendPointStyle,
+        onChartOptions:onChartOptions,
+        downloadOptions:downloadOptions,
+        changeTypes:changeTypes
     }
 
     const getHexRgbCode = (str) => {
@@ -233,6 +243,10 @@ export const ChartJS = (
    
 
     const chartNodeConvert = (newdataset) => {
+
+        if(charttype){
+            newdataset.type=charttype;
+          }
 
         newdataset.radiusValue=typeof newdataset.radius ==="number"?newdataset.radius:undefined;
         
@@ -303,8 +317,7 @@ export const ChartJS = (
         }
 
         const pointRadius = (ctx) => {
-            debugger;
-            var value = ctx.raw;
+             var value = ctx.raw;
             var index = ctx.index;
             const { dataset } = ctx;
             var id = ctx.type;
@@ -352,6 +365,7 @@ export const ChartJS = (
 
         for (const chartnode of React.Children.toArray(children)) {
               if(chartnode.props){
+                  
                 datasets.push(chartNodeConvert(Object.assign({}, chartnode.props)));
               }
         }
@@ -1049,7 +1063,7 @@ export const ChartJS = (
 
     const canvas = useRef();
     const [chartmain, setChartmain] = useState(null);
-
+     const [charttype, setCharttype] = useState(null);
     const ChartRender=()=>{
          
         if(children===null&&children===undefined){
@@ -1178,7 +1192,7 @@ export const ChartJS = (
 
     }
 
-
+   
    
 
     useEffect(() => {
@@ -1208,18 +1222,30 @@ export const ChartJS = (
          }
       
  
-    }, [children,width,height,chartjs])
+    }, [children,width,height,chartjs,charttype])
 
 
-    function canvasSaveImage(){
+    const canvasSaveImage=()=>{
+
+        if(!canvas?.current){
+            return ;
+      }
+        // var dataURL = this.canvas?.toDataURL("image/jpg", 1.0);
+        // var a = document.createElement('a');
+        // a.href = dataURL;
+        // a.download = filename;
+        // document.body.appendChild(a);
+        // a.click();
+
         let downloadLink = document.createElement('a');
         downloadLink.setAttribute('download', 'CanvasAsImage.png');
-         let dataURL = canvas.current.toDataURL('image/png');
+         let dataURL = canvas?.current?.toDataURL('image/jpg',1.0);
         let url = dataURL.replace(/^data:image\/png/,'data:application/octet-stream');
         downloadLink.setAttribute('href', url);
         downloadLink.click();
     }
-    function canvasPrint(){
+
+    const canvasPrint=()=>{
         var win=window.open();
         if(win.document&&yazdir>1){
             win.document.write("<br><img src='"+canvas.current.toDataURL()+"'/>");
@@ -1233,10 +1259,75 @@ export const ChartJS = (
        
     }
 
+     const downloadChartData=(filename,fileType="csv")=>{
     
+    
+        var jsondata = [];
+        for (let i = 0; i <  labels.length; i++) {
+            
+          const label =  labels[i];
+    
+          const row = {};
+    
+          Object.defineProperty(row, "label", {
+            value: label,
+            writable: true,
+            configurable: true,
+            enumerable:true,
+          });
+    
+          datasets.forEach((v, ind) => {
+             if (v.data[i]) {
+              Object.defineProperty(row, v.label, {
+                value: v.data[i].toString(),
+                writable: true,
+                configurable: true,
+                enumerable:true,
+              });
+            }
+          });
+    
+          jsondata.push(row);
+        }
+    
+        downloadXlSX(jsondata, filename,fileType);
+    }
+    
+        // import XLSX from 'xlsx'
+        
+      const downloadXlSX= (jsondata=[],fileName="ChartExportData",fileType)=>{
+          
+       try {
+        const worksheet = XLSX.utils.json_to_sheet(jsondata,{dateNF:"dd-mm-YYYY"});
+        const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+         XLSX.writeFile(workbook,fileName + '_' + new Date().getTime()+"."+(fileType||"csv"),{bookType:(fileType||"csv"),type:"array"});
+        
+       } catch (error) {
+           
+       }
+        
+    
+     }
+
+     useEffect(() => {
+        onChartOptions({
+            saveImage:canvasSaveImage,
+            printImage:canvasPrint,
+            dataSave:downloadChartData
+       });
+     }, [ ])
+
+    
+    
+   
     
     return (
     <div   style={{position:"relative",height:height,width:width}}>
+        {downloadOptions&&<button onClick={()=>{canvasSaveImage()}} className="p-component p-button">JPG</button>}
+        {downloadOptions&&<button onClick={()=>{downloadChartData()}} className="p-component p-button p-ml-1">CSV</button>}
+        {changeTypes&&<button onClick={()=>{setCharttype("line")}} className="p-component p-button p-ml-1">Chart Line</button>}
+        {changeTypes&&<button onClick={()=>{setCharttype("bar")}} className="p-component p-button p-ml-1">Chart Bar</button>}
+         
         <canvas   ref={canvas} id={generateUid()}    ></canvas>
      </div>
     )
