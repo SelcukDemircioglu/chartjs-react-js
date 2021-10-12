@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartJS,ChartJSNode} from './chartjs-react-js';
+import { ChartJS,ChartJSNode} from './chartjs-react-js/lib';
 
 const getRandomColor=()=>{
   var letters = '0123456789ABCDEF';
@@ -51,10 +51,8 @@ const App=()=>{
   
    
 const dataViews=[
-  {value:5,backgroundColor:Colors.ORANGE},
-  {value:15,backgroundColor:Colors.TURKUAZ},
-  {value:6,backgroundColor:Colors.SECOND_COLOR},
-  {value:13,backgroundColor:Colors.RED},
+  {value:1,index:0,backgroundColor:Colors.ORANGE, dropColor:Colors.ORANGE},
+  {value:2,index:1,backgroundColor:Colors.TURKUAZ, dropColor:Colors.TURKUAZ},
 ];
 
 
@@ -78,6 +76,9 @@ const dataViews=[
            type="pie"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+           changeTypes
+           downloadOptions
+          
          >
         
            <ChartJSNode
@@ -169,17 +170,23 @@ const dataViews=[
            type="line"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+            pointText={true}
+           downloadOptions
+           changeTypes
+           
          >
         
            <ChartJSNode
-             order={0}
-             data={RandomData(5, 50, 5).data}
+             order={1}
+             data={[1,2,3,2,6]}
              backgroundColor={Colors.ORANGE}
              borderColor={Colors.HEADER_COLOR}
              rotation={45}
              pointStyle="rect"
              type="line"
              label="data"
+             dataViews={dataViews}
+             
            />
           
          </ChartJS>
