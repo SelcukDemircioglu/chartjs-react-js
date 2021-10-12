@@ -1515,23 +1515,76 @@ var ChartJS = function ChartJS(_ref2) {
     onClick: function onClick() {
       canvasSaveImage();
     },
-    className: "p-component p-button"
+    style: {
+      marginLeft: "0.1rem",
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    }
   }, "JPG"), downloadOptions && /*#__PURE__*/_react.default.createElement("button", {
     onClick: function onClick() {
       downloadChartData();
     },
-    className: "p-component p-button p-ml-1"
-  }, "CSV"), changeTypes && /*#__PURE__*/_react.default.createElement("button", {
-    onClick: function onClick() {
-      setCharttype("line");
+    style: {
+      marginLeft: "0.1rem",
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    }
+  }, "CSV"), changeTypes && /*#__PURE__*/_react.default.createElement("select", {
+    onChange: function onChange(e) {
+      setCharttype(e.target.value === "default" ? null : e.target.value);
     },
-    className: "p-component p-button p-ml-1"
-  }, "Chart Line"), changeTypes && /*#__PURE__*/_react.default.createElement("button", {
-    onClick: function onClick() {
-      setCharttype("bar");
+    style: {
+      marginLeft: "0.1rem",
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    }
+  }, /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
     },
-    className: "p-component p-button p-ml-1"
-  }, "Chart Bar"), /*#__PURE__*/_react.default.createElement("canvas", {
+    selected: true,
+    value: "line"
+  }, "Line"), /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    },
+    value: "bar"
+  }, "Bar"), /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    },
+    value: "pie"
+  }, "Pie"), /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    },
+    value: "polarArea"
+  }, "PolarArea"), /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    },
+    value: "radar"
+  }, "Radar"), /*#__PURE__*/_react.default.createElement("option", {
+    style: {
+      backgroundColor: "white",
+      borderWidth: "0.1px",
+      borderColor: "ButtonFace"
+    },
+    value: "default"
+  }, "default")), /*#__PURE__*/_react.default.createElement("canvas", {
     ref: canvas,
     id: generateUid()
   }));
