@@ -146,7 +146,8 @@ export const ChartJS =  (
         LegendPointStyle=undefined,
         onChartOptions=(e)=>{ return e},
         downloadOptions=false,
-        changeTypes=false
+        changeTypes=false,
+        className
       }
 ) => {
     var id=0;
@@ -210,7 +211,8 @@ export const ChartJS =  (
         LegendPointStyle:LegendPointStyle,
         onChartOptions:onChartOptions,
         downloadOptions:downloadOptions,
-        changeTypes:changeTypes
+        changeTypes:changeTypes,
+        className:className
     }
 
     const getHexRgbCode = (str) => {
@@ -1322,7 +1324,7 @@ export const ChartJS =  (
    
     
     return (
-    <div   style={{position:"relative",height:height,width:width}}>
+    <div className={className}   style={{position:"relative",height:height,width:width}}>
         {downloadOptions&&<button onClick={()=>{canvasSaveImage()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >JPG</button>}
         {downloadOptions&&<button onClick={()=>{downloadChartData()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >CSV</button>}
         {changeTypes&&<select onChange={(e)=>{setCharttype(e.target.value==="default"?null:e.target.value)}} 

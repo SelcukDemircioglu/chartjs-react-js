@@ -202,6 +202,7 @@ const dataViews=[
            type="bar"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+           pointText
          >
         
            <ChartJSNode

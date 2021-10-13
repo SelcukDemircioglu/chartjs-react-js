@@ -292,7 +292,8 @@ var ChartJS = function ChartJS(_ref2) {
       _ref2$downloadOptions = _ref2.downloadOptions,
       downloadOptions = _ref2$downloadOptions === void 0 ? false : _ref2$downloadOptions,
       _ref2$changeTypes = _ref2.changeTypes,
-      changeTypes = _ref2$changeTypes === void 0 ? false : _ref2$changeTypes;
+      changeTypes = _ref2$changeTypes === void 0 ? false : _ref2$changeTypes,
+      className = _ref2.className;
   var id = 0;
   var datasets = [];
   var chartjs = {
@@ -350,7 +351,8 @@ var ChartJS = function ChartJS(_ref2) {
     LegendPointStyle: LegendPointStyle,
     onChartOptions: onChartOptions,
     downloadOptions: downloadOptions,
-    changeTypes: changeTypes
+    changeTypes: changeTypes,
+    className: className
   };
 
   var getHexRgbCode = function getHexRgbCode(str) {
@@ -1506,6 +1508,7 @@ var ChartJS = function ChartJS(_ref2) {
     });
   }, []);
   return /*#__PURE__*/_react.default.createElement("div", {
+    className: className,
     style: {
       position: "relative",
       height: height,

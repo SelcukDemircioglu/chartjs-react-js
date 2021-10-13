@@ -8,6 +8,7 @@ type methodProps={
 }
 type methodChange = React.ReactNode | ((props: methodProps) => React.ReactNode);
 
+  
 interface ChartJSProps{
      title?:string;// baslik; this.title //en üst başlık
      type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
@@ -97,6 +98,7 @@ interface ChartJSProps{
       onChartOptions(e:methodProps):Function;
       downloadOptions?:boolean;
       changeTypes?:boolean;
+      className?:string;
 }
 
 
