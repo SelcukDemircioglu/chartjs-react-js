@@ -1324,21 +1324,24 @@ export const ChartJS =  (
    
     
     return (
-    <div className={className}   style={{position:"relative",height:height,width:width}}>
-        {downloadOptions&&<button onClick={()=>{canvasSaveImage()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >JPG</button>}
-        {downloadOptions&&<button onClick={()=>{downloadChartData()}} style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  >CSV</button>}
-        {changeTypes&&<select onChange={(e)=>{setCharttype(e.target.value==="default"?null:e.target.value)}} 
-            style={{marginLeft:"0.1rem",backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} 
-          >
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}}  selected value="line">Line</option>
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="bar">Bar</option>
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="pie">Pie</option>
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="polarArea">PolarArea</option>
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="radar">Radar</option>
-            <option style={{backgroundColor:"white",borderWidth:"0.1px",borderColor:"ButtonFace"}} value="default">default</option>
-        </select>}
-        <canvas   ref={canvas} id={generateUid()}    ></canvas>
-     </div>
+        <div style={{position:"relative"}}>
+            {downloadOptions && <button onClick={() => { canvasSaveImage() }} style={{ marginLeft: "0.1rem", backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }}  >JPG</button>}
+            {downloadOptions && <button onClick={() => { downloadChartData() }} style={{ marginLeft: "0.1rem", backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }}  >CSV</button>}
+            {changeTypes && <select onChange={(e) => { setCharttype(e.target.value === "default" ? null : e.target.value) }}
+                style={{ marginLeft: "0.1rem", backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }}
+            >
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} selected value="line">Line</option>
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} value="bar">Bar</option>
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} value="pie">Pie</option>
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} value="polarArea">PolarArea</option>
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} value="radar">Radar</option>
+                <option style={{ backgroundColor: "white", borderWidth: "0.1px", borderColor: "ButtonFace" }} value="default">default</option>
+            </select>}
+            <div className={className} style={{ position: "relative", height: height, width: width }}>
+                <canvas ref={canvas} id={generateUid()}    ></canvas>
+            </div>
+        </div>
+
     )
 
 }

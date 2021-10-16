@@ -1508,11 +1508,8 @@ var ChartJS = function ChartJS(_ref2) {
     });
   }, []);
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: className,
     style: {
-      position: "relative",
-      height: height,
-      width: width
+      position: "relative"
     }
   }, downloadOptions && /*#__PURE__*/_react.default.createElement("button", {
     onClick: function onClick() {
@@ -1587,10 +1584,17 @@ var ChartJS = function ChartJS(_ref2) {
       borderColor: "ButtonFace"
     },
     value: "default"
-  }, "default")), /*#__PURE__*/_react.default.createElement("canvas", {
+  }, "default")), /*#__PURE__*/_react.default.createElement("div", {
+    className: className,
+    style: {
+      position: "relative",
+      height: height,
+      width: width
+    }
+  }, /*#__PURE__*/_react.default.createElement("canvas", {
     ref: canvas,
     id: generateUid()
-  }));
+  })));
 };
 
 exports.ChartJS = ChartJS;
