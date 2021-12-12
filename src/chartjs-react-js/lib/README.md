@@ -115,6 +115,46 @@
        justifyContent: "center"}}  >
         
          <ChartJS
+            width="45vw"
+            height="250px"
+            yAxesmin={0}
+            indexAxis="x"
+            xtitle="xtitle"
+            ytitle="ytitle"
+            title="ChartJS Line"
+            position="top"
+            type="line"
+            labels={RandomData(5, 50, 5).labels}
+            backgroundColor={Colors.TRANSPARENT}
+              
+            downloadOptions
+            changeTypes
+          >
+          
+            <ChartJSNode
+              
+              order={1}
+              data={[1,2,3,2,6]}
+              backgroundColor={Colors.ORANGE}
+              borderColor={Colors.HEADER_COLOR}
+              rotation={45}
+              pointStyle="rect"
+              type="pie"
+              label="dataline"
+              borderWidth={1}
+              borderColor="#fff"
+              pointTextAllShow
+              pointText
+              pointTextAddLastValue="%"
+            />
+            
+          </ChartJS>
+
+        
+         <ChartJS
+            
+           xstacked
+           ystacked
            width="45vw"
            height="250px"
            pointText={true}
@@ -127,10 +167,11 @@
            backgroundColor={Colors.TRANSPARENT}
            changeTypes
            downloadOptions
-          
+           
          >
         
            <ChartJSNode
+             
              order={0}
              data={RandomData(5, 50, 5).data}
              backgroundColor={RandomData(5, 50, 5).colors}
@@ -139,7 +180,26 @@
              type="pie"
              label="data"
            />
-          
+           <ChartJSNode
+             
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="pie"
+             label="data"
+           />
+            <ChartJSNode
+             
+             order={0}
+             data={RandomData(5, 50, 5).data}
+             backgroundColor={RandomData(5, 50, 5).colors}
+             rotation={45}
+             pointStyle="rect"
+             type="pie"
+             label="data"
+           />
          </ChartJS>
 
          <ChartJS
@@ -152,7 +212,7 @@
            position="top"
            type="polarArea"
            labels={RandomData(5, 50, 5).labels}
-          backgroundColor={Colors.TRANSPARENT}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -169,14 +229,13 @@
          <ChartJS
            width="45vw"
            height="250px"
-           pointText={true}
            yAxesmin={0}
            indexAxis="x"
            title="ChartJS Radar"
            position="top"
            type="radar"
            labels={RandomData(5, 50, 5).labels}
-          backgroundColor={Colors.TRANSPARENT}
+           backgroundColor={Colors.TRANSPARENT}
          >
         
            <ChartJSNode
@@ -207,38 +266,7 @@
              label="data3"
            />
          </ChartJS>
-         <ChartJS
-           width="45vw"
-           height="250px"
-            yAxesmin={0}
-           indexAxis="x"
-           xtitle="xtitle"
-           ytitle="ytitle"
-           title="ChartJS Line"
-           position="top"
-           type="line"
-           labels={RandomData(5, 50, 5).labels}
-           backgroundColor={Colors.TRANSPARENT}
-            pointText={true}
-           downloadOptions
-           changeTypes
-           
-         >
-        
-           <ChartJSNode
-             order={1}
-             data={[1,2,3,2,6]}
-             backgroundColor={Colors.ORANGE}
-             borderColor={Colors.HEADER_COLOR}
-             rotation={45}
-             pointStyle="rect"
-             type="line"
-             label="data"
-             dataViews={dataViews}
-             
-           />
-          
-         </ChartJS>
+
 
          <ChartJS
            width="45vw"
@@ -252,6 +280,7 @@
            type="bar"
            labels={RandomData(5, 50, 5).labels}
            backgroundColor={Colors.TRANSPARENT}
+           pointText
          >
         
            <ChartJSNode
@@ -300,6 +329,9 @@
              pointStyle="rect"
              type="line"
              label="data"
+             pointText
+             pointTextAllShow
+             pointTextAddLastValue=" m2"
            />
          </ChartJS>
 

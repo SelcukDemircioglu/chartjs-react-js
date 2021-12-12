@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -8,6 +10,8 @@ exports.ChartJSNode = ChartJSNode;
 exports.generateUid = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _auto = _interopRequireDefault(require("chart.js/auto"));
 
@@ -19,35 +23,27 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function ChartJSNode(_ref) {
   var _ref$type = _ref.type,
@@ -117,8 +113,75 @@ function ChartJSNode(_ref) {
       _ref$base = _ref.base,
       base = _ref$base === void 0 ? undefined : _ref$base,
       _ref$linearGradient = _ref.linearGradient,
-      linearGradient = _ref$linearGradient === void 0 ? undefined : _ref$linearGradient;
-  return {};
+      linearGradient = _ref$linearGradient === void 0 ? undefined : _ref$linearGradient,
+      _ref$barThickness = _ref.barThickness,
+      barThickness = _ref$barThickness === void 0 ? undefined : _ref$barThickness,
+      _ref$maxBarThickness = _ref.maxBarThickness,
+      maxBarThickness = _ref$maxBarThickness === void 0 ? undefined : _ref$maxBarThickness,
+      _ref$minBarLength = _ref.minBarLength,
+      minBarLength = _ref$minBarLength === void 0 ? undefined : _ref$minBarLength,
+      _ref$pointTextAllShow = _ref.pointTextAllShow,
+      pointTextAllShow = _ref$pointTextAllShow === void 0 ? false : _ref$pointTextAllShow,
+      _ref$pointTextAddFirs = _ref.pointTextAddFirstValue,
+      pointTextAddFirstValue = _ref$pointTextAddFirs === void 0 ? undefined : _ref$pointTextAddFirs,
+      _ref$pointTextAddLast = _ref.pointTextAddLastValue,
+      pointTextAddLastValue = _ref$pointTextAddLast === void 0 ? undefined : _ref$pointTextAddLast,
+      _ref$pointText = _ref.pointText,
+      pointText = _ref$pointText === void 0 ? false : _ref$pointText,
+      _ref$pointTextAbsvalu = _ref.pointTextAbsvalue,
+      pointTextAbsvalue = _ref$pointTextAbsvalu === void 0 ? false : _ref$pointTextAbsvalu,
+      _ref$pointDrop = _ref.pointDrop,
+      pointDrop = _ref$pointDrop === void 0 ? false : _ref$pointDrop,
+      _ref$pointAllDrop = _ref.pointAllDrop,
+      pointAllDrop = _ref$pointAllDrop === void 0 ? false : _ref$pointAllDrop;
+  return {
+    type: type,
+    hidden: hidden,
+    indexAxis: indexAxis,
+    label: label,
+    order: order,
+    data: data,
+    dataViews: dataViews,
+    lineAddViews: lineAddViews,
+    id: id,
+    //line bar  element konfigrasyonlar
+    backgroundColor: backgroundColor,
+    borderColor: borderColor,
+    borderWidth: borderWidth,
+    tension: tension,
+    fill: fill,
+    spanGaps: spanGaps,
+    stepped: stepped,
+    hoverBorderWidth: hoverBorderWidth,
+    hoverBackgroundColor: hoverBackgroundColor,
+    //noktaların konfigrasyonları
+    pointStyle: pointStyle,
+    hitRadius: hitRadius,
+    hoverRadius: hoverRadius,
+    rotation: rotation,
+    borderDash: borderDash,
+    borderDashOffset: borderDashOffset,
+    radius: radius,
+    radiusValue: radiusValue,
+    borderAlign: borderAlign,
+    hoverOffset: hoverOffset,
+    bgColor: bgColor,
+    bdrColor: bdrColor,
+    categoryPercentage: categoryPercentage,
+    barPercentage: barPercentage,
+    base: base,
+    linearGradient: linearGradient,
+    barThickness: barThickness,
+    maxBarThickness: maxBarThickness,
+    minBarLength: minBarLength,
+    pointTextAllShow: pointTextAllShow,
+    pointTextAddFirstValue: pointTextAddFirstValue,
+    pointTextAddLastValue: pointTextAddLastValue,
+    pointText: pointText,
+    pointTextAbsvalue: pointTextAbsvalue,
+    pointDrop: pointDrop,
+    pointAllDrop: pointAllDrop
+  };
 }
 /**
     *  benzersiz id oluşturma
@@ -235,10 +298,6 @@ var ChartJS = function ChartJS(_ref2) {
       xAxesPosition = _ref2$xAxesPosition === void 0 ? undefined : _ref2$xAxesPosition,
       _ref2$yAxesPosition = _ref2.yAxesPosition,
       yAxesPosition = _ref2$yAxesPosition === void 0 ? undefined : _ref2$yAxesPosition,
-      _ref2$pointText = _ref2.pointText,
-      pointText = _ref2$pointText === void 0 ? false : _ref2$pointText,
-      _ref2$pointTextAbsval = _ref2.pointTextAbsvalue,
-      pointTextAbsvalue = _ref2$pointTextAbsval === void 0 ? false : _ref2$pointTextAbsval,
       _ref2$mobil = _ref2.mobil,
       mobil = _ref2$mobil === void 0 ? false : _ref2$mobil,
       _ref2$mobilMinSize = _ref2.mobilMinSize,
@@ -265,8 +324,6 @@ var ChartJS = function ChartJS(_ref2) {
       intervalFunction = _ref2$intervalFunctio === void 0 ? [] : _ref2$intervalFunctio,
       _ref2$pluginsData = _ref2.pluginsData,
       pluginsData = _ref2$pluginsData === void 0 ? [] : _ref2$pluginsData,
-      _ref2$pointDrop = _ref2.pointDrop,
-      pointDrop = _ref2$pointDrop === void 0 ? false : _ref2$pointDrop,
       _ref2$layoutPadding = _ref2.layoutPadding,
       layoutPadding = _ref2$layoutPadding === void 0 ? undefined : _ref2$layoutPadding,
       _ref2$labelsFont = _ref2.labelsFont,
@@ -293,8 +350,41 @@ var ChartJS = function ChartJS(_ref2) {
       downloadOptions = _ref2$downloadOptions === void 0 ? false : _ref2$downloadOptions,
       _ref2$changeTypes = _ref2.changeTypes,
       changeTypes = _ref2$changeTypes === void 0 ? false : _ref2$changeTypes,
-      className = _ref2.className;
-  var id = 0;
+      className = _ref2.className,
+      _ref2$autoSkip = _ref2.autoSkip,
+      autoSkip = _ref2$autoSkip === void 0 ? true : _ref2$autoSkip,
+      _ref2$autoSkipPadding = _ref2.autoSkipPadding,
+      autoSkipPadding = _ref2$autoSkipPadding === void 0 ? false : _ref2$autoSkipPadding,
+      _ref2$maxLabelsRotati = _ref2.maxLabelsRotation,
+      maxLabelsRotation = _ref2$maxLabelsRotati === void 0 ? undefined : _ref2$maxLabelsRotati,
+      _ref2$minLabelsRotati = _ref2.minLabelsRotation,
+      minLabelsRotation = _ref2$minLabelsRotati === void 0 ? undefined : _ref2$minLabelsRotati;
+  var canvas = (0, _react.useRef)();
+
+  var _useState = (0, _react.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      chartmain = _useState2[0],
+      setChartmain = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(null),
+      _useState4 = _slicedToArray(_useState3, 2),
+      charttype = _useState4[0],
+      setCharttype = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      ciz = _useState6[0],
+      setCiz = _useState6[1];
+
+  var _useState7 = (0, _react.useState)({
+    leftdivider: null,
+    rightdivider: null,
+    area: null
+  }),
+      _useState8 = _slicedToArray(_useState7, 2),
+      draws = _useState8[0],
+      setDraws = _useState8[1];
+
   var datasets = [];
   var chartjs = {
     title: title,
@@ -334,8 +424,6 @@ var ChartJS = function ChartJS(_ref2) {
     yAxesLeftAdd: yAxesLeftAdd,
     xAxesPosition: xAxesPosition,
     yAxesPosition: yAxesPosition,
-    pointText: pointText,
-    pointTextAbsvalue: pointTextAbsvalue,
     mobil: mobil,
     mobilMinSize: mobilMinSize,
     children: children,
@@ -343,7 +431,6 @@ var ChartJS = function ChartJS(_ref2) {
     ticksXcallback: ticksXcallback,
     tooltipCallbacks: tooltipCallbacks,
     style: style,
-    pointDrop: pointDrop,
     layoutPadding: layoutPadding,
     labelsFont: labelsFont,
     usePointStyleLegend: usePointStyleLegend,
@@ -352,7 +439,11 @@ var ChartJS = function ChartJS(_ref2) {
     onChartOptions: onChartOptions,
     downloadOptions: downloadOptions,
     changeTypes: changeTypes,
-    className: className
+    className: className,
+    autoSkip: autoSkip,
+    autoSkipPadding: autoSkipPadding,
+    maxLabelsRotation: maxLabelsRotation,
+    minLabelsRotation: minLabelsRotation
   };
 
   var getHexRgbCode = function getHexRgbCode(str) {
@@ -380,6 +471,8 @@ var ChartJS = function ChartJS(_ref2) {
   };
 
   var chartNodeConvert = function chartNodeConvert(newdataset) {
+    var _newdataset$dataViews;
+
     if (charttype) {
       newdataset.type = charttype;
     }
@@ -426,11 +519,9 @@ var ChartJS = function ChartJS(_ref2) {
       if (!chartArea) {
         // This case happens on initial chart load
         return null;
-      }
-
-      var chartWidth = chartArea.right - chartArea.left;
-      var chartHeight = chartArea.bottom - chartArea.top; // Create the gradient because this is either the first render
+      } // Create the gradient because this is either the first render
       // or the size of the chart has changed
+
 
       var gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
       gradient.addColorStop(0, dataColor[0]);
@@ -442,14 +533,12 @@ var ChartJS = function ChartJS(_ref2) {
     var poitnBackground = function poitnBackground(contex) {
       var _dataset$dataViews;
 
-      var value = contex.raw;
       var dataset = contex.dataset,
           chart = contex.chart;
-      var id = dataset.id;
-      var index = contex.index; //sadece görüntieneceklerde value olanları kapatıyoruz
+      var Index = contex.index; //sadece görüntieneceklerde value olanları kapatıyoruz
 
       var item = (_dataset$dataViews = dataset.dataViews) === null || _dataset$dataViews === void 0 ? void 0 : _dataset$dataViews.filter(function (v, i) {
-        return v.index === index;
+        return v.index === Index;
       })[0];
 
       if (item !== undefined) {
@@ -468,13 +557,11 @@ var ChartJS = function ChartJS(_ref2) {
     };
 
     var pointRadius = function pointRadius(ctx) {
-      var value = ctx.raw;
-      var index = ctx.index;
-      var dataset = ctx.dataset;
-      var id = ctx.type; //sadece görüntieneceklerde value olanları kapatıyoruz
+      var Index = ctx.index;
+      var dataset = ctx.dataset; //sadece görüntieneceklerde value olanları kapatıyoruz
 
       var item = dataset.dataViews.filter(function (v, i) {
-        return v.index === index;
+        return v.index === Index;
       })[0];
 
       if (item !== undefined) {
@@ -482,28 +569,9 @@ var ChartJS = function ChartJS(_ref2) {
       }
 
       return dataset.radiusValue;
-    }; //point text iptal olacak chart şekilleri
+    };
 
-
-    if ("linebarpie".indexOf(newdataset.type) === -1) {
-      indexAxis = undefined;
-      pointText = false;
-      newdataset.radius = undefined;
-    }
-
-    if (newdataset.type === "pie") {
-      newdataset = {
-        type: newdataset.type,
-        label: newdataset.label,
-        data: newdataset.data,
-        backgroundColor: newdataset.backgroundColor,
-        hoverOffset: 20,
-        dataViews: newdataset.dataViews
-      };
-      return newdataset;
-    }
-
-    if (newdataset.dataViews !== undefined && newdataset.dataViews.length > 0) {
+    if (newdataset.dataViews && ((_newdataset$dataViews = newdataset.dataViews) === null || _newdataset$dataViews === void 0 ? void 0 : _newdataset$dataViews.length) > 0) {
       newdataset.bgColor = newdataset.backgroundColor;
       newdataset.radius = pointRadius;
       newdataset.backgroundColor = poitnBackground;
@@ -620,7 +688,11 @@ var ChartJS = function ChartJS(_ref2) {
             display: xtitle === undefined ? false : true,
             stepSize: xAxesstep,
             font: xlabelsFont,
-            color: xlabelsFont.fontColor
+            color: xlabelsFont.fontColor,
+            autoSkip: indexAxis === "x" ? autoSkip : true,
+            autoSkipPadding: indexAxis === "x" ? autoSkipPadding : false,
+            maxRotation: indexAxis === "x" ? maxLabelsRotation : undefined,
+            minRotation: indexAxis === "x" ? minLabelsRotation : undefined
           }
         },
         y: {
@@ -644,7 +716,11 @@ var ChartJS = function ChartJS(_ref2) {
             display: ytitle === undefined ? false : true,
             stepSize: yAxesstep,
             font: ylabelsFont,
-            color: ylabelsFont.fontColor
+            color: ylabelsFont.fontColor,
+            autoSkip: indexAxis === "y" ? autoSkip : true,
+            autoSkipPadding: indexAxis === "y" ? autoSkipPadding : false,
+            maxRotation: indexAxis === "y" ? maxLabelsRotation : undefined,
+            minRotation: indexAxis === "y" ? minLabelsRotation : undefined
           }
         } // x1: {
         //     display: true,
@@ -793,17 +869,35 @@ var ChartJS = function ChartJS(_ref2) {
     }, duration);
   };
 
+  var textPointCalc = function textPointCalc(text, x, y, fontSize, canvasCtx, chartAreaValues) {
+    var w = (canvasCtx.measureText(text).width + 2) * 0.5;
+    var textWidth = canvasCtx.measureText(text).width + 2;
+    var b = 0;
+    var px = w + b;
+    var py = fontSize * 0.5 + 2;
+
+    if (w + x > chartAreaValues.right) {
+      //layout dışına çıkmaması için kaydırılıyor
+      b = w - x + chartAreaValues.right;
+      px = w + b;
+    }
+
+    return {
+      px: px,
+      py: py,
+      b: b,
+      width: w,
+      textWidth: textWidth
+    };
+  };
+
   var chartPlugins = function chartPlugins() {
     var newplugins = [{
       id: "ChartJSPointText",
       afterDraw: function afterDraw(chart, args, options) {
-        if (pointText === false) {
-          return;
-        } //console.log(chart);
+        //console.log(chart);
         //console.log(args);
         //console.log(options);
-
-
         var ctx = chart.ctx; // var chartArea = chart.chartArea;
         //sol üst
         // ctx.fillStyle = backgroundColor;
@@ -819,236 +913,231 @@ var ChartJS = function ChartJS(_ref2) {
             height = _chart$chartArea.height,
             width = _chart$chartArea.width;
 
-        var _loop = function _loop(ind) {
-          var chartItem = metasets[ind];
-          var chartItemData = chartItem.data;
-          var parsed = chartItem._parsed;
-          var dataViews = chartItem._dataset.dataViews;
-          var lineAddViews = chartItem._dataset.lineAddViews;
-          var hidden = chartItem._dataset.hidden;
+        var _iterator2 = _createForOfIteratorHelper(metasets),
+            _step2;
 
-          if (!chartItem) {
-            return {
-              v: void 0
-            };
-          } //console.log(chartItem);
+        try {
+          var _loop = function _loop() {
+            var chartItem = _step2.value;
+            var chartItemData = chartItem.data;
+            var parsed = chartItem._parsed;
+            var dataViews = chartItem._dataset.dataViews;
+            var lineAddViews = chartItem._dataset.lineAddViews;
+            var pointTextAllShow = chartItem._dataset.pointTextAllShow;
+            var pointTextAddFirstValue = chartItem._dataset.pointTextAddFirstValue ? chartItem._dataset.pointTextAddFirstValue : "";
+            var pointTextAddLastValue = chartItem._dataset.pointTextAddLastValue ? chartItem._dataset.pointTextAddLastValue : "";
+            var visibility = chartItem.visible;
+            var pointText = chartItem._dataset.pointText;
+            var pointTextAbsvalue = chartItem._dataset.pointTextAbsvalue;
 
+            if (pointText && visibility) {
+              var _loop2 = function _loop2(index) {
+                //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
+                ctx.save(); //kaydeder 
 
-          var _loop2 = function _loop2(index) {
-            var point = chartItemData[index]; //console.log(point);
+                chartItem.type === "pie" && console.log(chartItem);
 
-            x = point.x;
-            y = point.y;
-            pheight = point.height;
-            color = point.options.borderColor;
-            value = indexAxis === "x" ? parsed[index].y : parsed[index].x;
-            pointStyle = point.options.pointStyle;
-            radius = point.options.radius;
-            textWidth = ctx.measureText(value).width; //değerlerin hepsini pozitif yazıyoruz
+                if (chartItem.type === "pie") {
+                  var point = chartItemData[index];
+                  var arcXY = ArcXYText(chartItemData[index]);
+                  var pradius = 12;
 
-            if (pointTextAbsvalue) {
-              value = typeof value === "number" ? Math.abs(value) : value;
-            } //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
-
-
-            ctx.save(); //kaydeder 
-
-            if (chartItem.type === "pie") {
-              var arcXY = ArcXYText(chartItemData[index]);
-
-              if (arcXY) {
-                // ctx.fillStyle = "#000";
-                // ctx.beginPath();
-                // ctx.moveTo(x,y);
-                // ctx.lineTo(arcXY.x,arcXY.y);
-                // ctx.stroke();
-                var total = chartItem.total;
-                value = parsed[index];
-                x = arcXY.x;
-                y = arcXY.y;
-                ctx.translate(x, y);
-
-                if (pointText && !chartItem.hidden) {
-                  ctx.font = "bold ".concat(radius ? radius : 14, "px sans-serif");
-                  ctx.fillStyle = "#000";
-                  ctx.textAlign = 'center';
-                  ctx.fillText(yuzde(total, value), 0, 0);
-                }
-              }
-            }
-
-            if (chartItem.type === "line") {
-              //console.log("line top")
-              var k = (y - bottom) / value; //console.log(top)
-              //console.log(bottom)
-              //console.log(k)
-              //lineAddViews
-
-              if (lineAddViews) {
-                lineAddViews.forEach(function (element) {
-                  var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
-                  ctx.strokeStyle = element.backgroundColor;
-                  ctx.beginPath();
-                  ctx.moveTo(left, lineY);
-                  ctx.lineTo(right, lineY);
-                  ctx.stroke();
-                });
-              } //dataViews
-
-
-              if (indexAxis === "x") {
-                y = y + 2 * radius > bottom ? y - 2 * radius : y + 2 * radius;
-
-                if (x - radius <= left) {
-                  y = y - 2 * radius;
-                  x = x + 2 * radius; // : x-radius*0.5;
+                  if (arcXY) {
+                    var total = chartItem.total;
+                    var pieValue = parsed[index];
+                    ctx.translate(arcXY.x, arcXY.y);
+                    var valuelast = pointTextAddFirstValue + yuzde(total, pieValue) + pointTextAddLastValue;
+                    ctx.font = "bold ".concat(pradius ? pradius * 0.9 : 10, "px sans-serif");
+                    ctx.fillStyle = "#000";
+                    ctx.textAlign = 'center';
+                    ctx.fillText(valuelast, 0, 0);
+                  }
                 }
 
-                radius = 1.5 * radius;
-              } else {
-                x = x + 2 * radius > right ? x - 2 * radius : x + 2 * radius;
-              }
+                if (chartItem.type === "line") {
+                  var _point = chartItemData[index]; //console.log(point);
 
-              ctx.translate(x, y); //  console.log(chartItem);
-              //  console.log("chartItem.hidden");
-              //  console.log(chartItem.hidden);
+                  lx = _point.x;
+                  ly = _point.y;
+                  lheight = _point.height;
+                  lcolor = _point.options.borderColor;
+                  lvalue = indexAxis === "x" ? parsed[index].y : parsed[index].x;
+                  lpointStyle = _point.options.pointStyle;
+                  lradius = _point.options.radius;
+                  ltextWidth = ctx.measureText(lvalue).width;
+                  ltextHeight = ctx.measureText(lvalue).actualBoundingBoxDescent;
 
-              if (pointText && hidden === false) {
-                radius = radius < 13 ? 13 : radius;
-                ctx.font = "".concat(radius, "px Arial");
-                ctx.fillStyle = "#000";
-                ctx.textAlign = 'center';
-
-                if (!dataViews) {
-                  ctx.strokeStyle = "#000";
-                  textWidth = ctx.measureText(value).width + 2;
-                  ctx.fillText(value, 5, 0);
-                  ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-                } else if (dataViews.filter(function (v, i) {
-                  return v.index === index;
-                })[0]) {
-                  userValue = dataViews.filter(function (v, i) {
-                    return v.index === index;
-                  })[0].value;
-                  color = dataViews.filter(function (v, i) {
-                    return v.index === index;
-                  })[0].backgroundColor;
-                  ctx.strokeStyle = color;
-                  textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-                  var w = textWidth * 0.5;
-                  b = 0;
-                  px = w + b;
-                  py = radius * 0.5 + 2;
-
-                  if (w + x > right) {
-                    //layout dışına çıkmaması için kaydırılıyor
-                    b = w - x + right;
-                    px = w + b;
+                  if (pointTextAbsvalue) {
+                    lvalue = typeof lvalue === "number" ? Math.abs(lvalue) : lvalue;
                   }
 
-                  ctx.strokeRect(-px, -py, textWidth, radius + 2);
-                  ctx.fillText(userValue ? userValue : value, -b, 0);
-                }
-              }
-            }
+                  if (lineAddViews) {
+                    lineAddViews.forEach(function (element) {
+                      var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
+                      ctx.strokeStyle = element.backgroundColor;
+                      ctx.beginPath();
+                      ctx.moveTo(left, lineY);
+                      ctx.lineTo(right, lineY);
+                      ctx.stroke();
+                    });
+                  } //dataViews
 
-            if (chartItem.type === "bar") {
-              //lineAddViews
-              if (lineAddViews) {
-                lineAddViews.forEach(function (element) {
-                  var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
-                  ctx.lineWidth = 2;
-                  ctx.strokeStyle = element.backgroundColor;
-                  ctx.beginPath();
-                  ctx.moveTo(left + 5, lineY);
-                  ctx.lineTo(right - 5, lineY);
-                  ctx.stroke();
-                  ctx.font = "".concat(20, "px Arial");
-                  ctx.fillStyle = element.backgroundColor;
-                  ctx.fillText("GSYH=" + element.value, left + 5, lineY + 15);
-                });
-              }
 
-              if (indexAxis === "x") {
-                ctx.translate(x, y);
-                ctx.rotate(-90 * Math.PI / 180);
-              } else {
-                ctx.translate(x, y);
-                ctx.rotate(0 * Math.PI / 180);
-              }
+                  if (indexAxis === "x") {
+                    ly = ly + 2 * lradius > bottom ? ly - 2 * lradius : ly + 2 * lradius;
 
-              if (pointText && !chartItem.hidden) {
-                radius = radius > 12 ? 12 : radius;
-                ctx.font = "".concat(radius, "px Arial");
-                ctx.fillStyle = "#000";
-                ctx.textAlign = 'center';
+                    if (lx - lradius <= left) {
+                      ly = ly - 2 * lradius;
+                      lx = lx + 2 * lradius; // : lx-lradius*0.5;
+                    }
 
-                if (!dataViews) {
-                  ctx.strokeStyle = "#000";
-                  textWidth = ctx.measureText(value).width + 2;
-                  ctx.fillText(value, 5, 0);
-                  ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-                } else if (dataViews.filter(function (v, i) {
-                  return v.index === index;
-                })[0]) {
-                  userValue = dataViews.filter(function (v, i) {
-                    return v.index === index;
-                  })[0].value;
-                  color = dataViews.filter(function (v, i) {
-                    return v.index === index;
-                  })[0].backgroundColor;
-                  ctx.strokeStyle = color;
-                  textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-
-                  var _w = textWidth * 0.5;
-
-                  b = 0;
-                  px = _w + b;
-                  py = radius + 2;
-
-                  if (_w + x > right) {
-                    //layout dışına çıkmaması için kaydırılıyor
-                    b = _w - x + right;
-                    px = _w + b;
+                    lradius = 1.5 * lradius;
+                  } else {
+                    lx = lx + 2 * lradius > right ? lx - 2 * lradius : lx + 2 * lradius;
                   }
 
-                  ctx.strokeRect(0, 0, textWidth, radius + 2);
-                  ctx.fillText(userValue ? userValue : value, _w, 0);
+                  ctx.translate(lx, ly);
+
+                  if (pointText) {
+                    lradius = lradius < 13 ? 13 : lradius;
+                    ctx.font = "".concat(lradius, "px Arial");
+                    ctx.fillStyle = "#000";
+                    ctx.textAlign = 'center';
+
+                    var _valuelast = pointTextAddFirstValue + lvalue + pointTextAddLastValue;
+
+                    if (pointTextAllShow && !dataViews || (dataViews === null || dataViews === void 0 ? void 0 : dataViews.length) <= 0) {
+                      ctx.strokeStyle = "#000";
+                      ctx.fillText(_valuelast, 0, ltextHeight);
+                    }
+
+                    if (!pointTextAllShow && dataViews !== null && dataViews !== void 0 && dataViews.filter(function (v, i) {
+                      return v.index === index;
+                    })[0]) {
+                      var userValueLine = dataViews.filter(function (v, i) {
+                        return v.index === index;
+                      })[0].value;
+                      var colorLine = dataViews.filter(function (v, i) {
+                        return v.index === index;
+                      })[0].backgroundColor;
+                      ctx.strokeStyle = colorLine; //yazını noktasının alan hesaplama ve noktayı belirleme
+
+                      var itemCalc = textPointCalc(userValueLine ? userValueLine : lvalue, lx, ly, lradius, ctx, chart.chartArea);
+                      ctx.strokeRect(-itemCalc.px, -itemCalc.py, itemCalc.width, lradius + 2);
+                      ctx.fillText(userValueLine ? userValueLine : lvalue, -itemCalc.b, 0);
+                    }
+                  }
                 }
+
+                if (chartItem.type === "bar") {
+                  var _point2 = chartItemData[index];
+                  bx = _point2.x;
+                  by = _point2.y;
+                  bheight = _point2.height;
+                  bcolor = _point2.options.borderColor;
+                  var bvalue = indexAxis === "x" ? parsed[index].y : parsed[index].x;
+                  bstyle = _point2.options.pointStyle;
+                  bradius = _point2.options.radius;
+                  btextWidth = ctx.measureText(bvalue).width;
+                  btextHeight = ctx.measureText(bvalue).actualBoundingBoxDescent; //değerlerin hepsini pozitif yazıyoruz
+
+                  if (pointTextAbsvalue) {
+                    bvalue = typeof bvalue === "number" ? Math.abs(bvalue) : bvalue;
+                  } //lineAddViews
+
+
+                  if (lineAddViews) {
+                    lineAddViews.forEach(function (element) {
+                      var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
+                      ctx.lineWidth = 2;
+                      ctx.strokeStyle = element.backgroundColor;
+                      ctx.beginPath();
+                      ctx.moveTo(left + 5, lineY);
+                      ctx.lineTo(right - 5, lineY);
+                      ctx.stroke();
+                      ctx.font = "".concat(20, "px Arial");
+                      ctx.fillStyle = element.backgroundColor;
+                      ctx.fillText("GSYH=" + element.value, left + 5, lineY + 15);
+                    });
+                  }
+
+                  ctx.translate(bx, by);
+
+                  if (indexAxis === "x") {
+                    ctx.rotate(-90 * Math.PI / 180);
+                  } else {
+                    ctx.rotate(0 * Math.PI / 180);
+                  }
+
+                  if (pointText && !chartItem.hidden) {
+                    bradius = bradius > 12 ? 12 : bradius;
+                    ctx.font = "".concat(bradius, "px Arial");
+                    ctx.fillStyle = "#000";
+                    ctx.textAlign = 'center';
+
+                    var _valuelast2 = pointTextAddFirstValue + bvalue + pointTextAddLastValue;
+
+                    if (pointTextAllShow && !dataViews || (dataViews === null || dataViews === void 0 ? void 0 : dataViews.length) <= 0) {
+                      ctx.strokeStyle = "#000";
+                      btextWidth = ctx.measureText(bvalue).width + 2;
+                      ctx.fillText(_valuelast2, 5, 0);
+                      ctx.strokeRect(-btextWidth * 0.5, -bradius * 0.5 - 2, btextWidth, bradius + 2);
+                    }
+
+                    if (dataViews !== null && dataViews !== void 0 && dataViews.filter(function (v, i) {
+                      return v.index === index;
+                    })[0]) {
+                      var userValueBar = dataViews.filter(function (v, i) {
+                        return v.index === index;
+                      })[0].value;
+                      userColorBar = dataViews.filter(function (v, i) {
+                        return v.index === index;
+                      })[0].backgroundColor;
+                      ctx.strokeStyle = userColorBar;
+
+                      var _itemCalc = textPointCalc(userValueBar ? userValueBar : bvalue, bx, by, bradius, ctx, chart.chartArea);
+
+                      ctx.strokeRect(0, 0, _itemCalc.textWidth, bradius + 2);
+                      ctx.fillText(userValueBar ? userValueBar : bvalue, _itemCalc.textWidth, 0);
+                    }
+                  }
+                }
+
+                ctx.restore();
+              };
+
+              for (var index = 0; index < chartItemData.length; index++) {
+                _loop2(index);
               }
             }
-
-            ctx.restore();
           };
 
-          for (var index = 0; index < chartItemData.length; index++) {
-            _loop2(index);
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var lx;
+            var ly;
+            var lheight;
+            var lcolor;
+            var lvalue;
+            var lpointStyle;
+            var lradius;
+            var ltextWidth;
+            var ltextHeight;
+            var bx;
+            var by;
+            var bheight;
+            var bcolor;
+            var bstyle;
+            var bradius;
+            var btextWidth;
+            var btextHeight;
+            var userColorBar;
+
+            _loop();
           }
-        };
-
-        for (var ind = 0; ind < metasets.length; ind++) {
-          var x;
-          var y;
-          var pheight;
-          var color;
-          var value;
-          var pointStyle;
-          var radius;
-          var textWidth;
-          var userValue;
-          var color;
-          var b;
-          var px;
-          var py;
-          var userValue;
-          var color;
-          var b;
-          var px;
-          var py;
-
-          var _ret = _loop(ind);
-
-          if (_typeof(_ret) === "object") return _ret.v;
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
         }
       }
     }, {
@@ -1063,12 +1152,8 @@ var ChartJS = function ChartJS(_ref2) {
         ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
       }
     }, {
-      id: "ChartJSafterRender",
+      id: "ChartJPointDrop",
       afterRender: function afterRender(chart, args, options) {
-        if (pointDrop === false) {
-          return;
-        }
-
         var dataXY = []; //console.log(chart);
         //console.log(args);
         //console.log(options);
@@ -1079,87 +1164,70 @@ var ChartJS = function ChartJS(_ref2) {
         //ctx.fillRect(chartArea.left, chartArea.top, (chartArea.right - chartArea.left), (chartArea.bottom - chartArea.top));
 
         var metasets = chart._metasets;
-        var indexAxis = chart.config._config.options.indexAxis;
-        var _chart$chartArea2 = chart.chartArea,
-            left = _chart$chartArea2.left,
-            top = _chart$chartArea2.top,
-            right = _chart$chartArea2.right,
-            bottom = _chart$chartArea2.bottom,
-            height = _chart$chartArea2.height,
-            width = _chart$chartArea2.width;
+        var IndexAxis = chart.config._config.options.indexAxis; //const {left,top,right,bottom,height,width}=chart.chartArea;
 
         for (var ind = 0; ind < metasets.length; ind++) {
           var chartItem = metasets[ind];
           var chartItemData = chartItem.data;
-          var parsed = chartItem._parsed;
           var label = chartItem.label;
-          var visibility = chartItem.hidden | chartItem.visible;
+          var visibility = chartItem.visible;
           var dataViews = chartItem._dataset.dataViews;
+          var pointDrop = chartItem._dataset.pointDrop;
+          var pointAllDrop = chartItem._dataset.pointAllDrop;
 
-          if (!chartItem) {
-            return;
-          } //console.log(chartItem);
+          if (pointDrop && visibility) {
+            var _loop3 = function _loop3(index) {
+              var point = chartItemData[index]; //console.log(point);
 
+              x = point.x;
+              y = point.y;
+              color = point.options.borderColor;
+              var pointkey = label + ind + index; //değerlerin hepsini pozitif yazıyoruz
+              //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
 
-          var _loop3 = function _loop3(index) {
-            var point = chartItemData[index]; //console.log(point);
+              if (chartItem.type === "pie") {
+                var arcXY = ArcXYText(chartItemData[index]);
 
-            x = point.x;
-            y = point.y;
-            pheight = point.height;
-            color = point.options.borderColor;
-            value = indexAxis === "x" ? parsed[index].y : parsed[index].x;
-            pointStyle = point.options.pointStyle;
-            radius = point.options.radius;
-            textWidth = ctx.measureText(value);
-            var pointkey = label + ind + index; //değerlerin hepsini pozitif yazıyoruz
+                if (arcXY) {
+                  x = arcXY.x;
+                  y = arcXY.y;
 
-            if (pointTextAbsvalue) {
-              value = typeof value === "number" ? Math.abs(value) : value;
-            } //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
+                  if (pointAllDrop && (!dataViews || (dataViews === null || dataViews === void 0 ? void 0 : dataViews.length) <= 0)) {
+                    dataXY.push({
+                      x: x,
+                      y: y,
+                      key: pointkey,
+                      color: "red"
+                    });
+                  }
 
-
-            if (chartItem.type === "pie") {
-              var arcXY = ArcXYText(chartItemData[index]);
-
-              if (arcXY) {
-                var total = chartItem.total;
-                value = parsed[index];
-                x = arcXY.x;
-                y = arcXY.y;
-
-                if (pointDrop && visibility) {
-                  dataXY.push({
-                    x: x,
-                    y: y,
-                    key: pointkey,
-                    color: "red"
-                  });
-                }
-              }
-            }
-
-            if (chartItem.type === "line") {
-              if (pointDrop && visibility) {
-                if (dataViews.filter(function (v, i) {
-                  return v.index === index;
-                })[0]) {
-                  var pointColor = dataViews.filter(function (v, i) {
+                  if (dataViews !== null && dataViews !== void 0 && dataViews.filter(function (v, i) {
                     return v.index === index;
-                  })[0].dropColor;
+                  })[0]) {
+                    var pointColor = dataViews.filter(function (v, i) {
+                      return v.index === index;
+                    })[0].dropColor;
+                    dataXY.push({
+                      x: x,
+                      y: y,
+                      key: pointkey,
+                      color: pointColor
+                    });
+                  }
+                }
+              }
+
+              if (chartItem.type === "line") {
+                if (pointAllDrop && (!dataViews || (dataViews === null || dataViews === void 0 ? void 0 : dataViews.length) <= 0)) {
                   dataXY.push({
                     x: x,
                     y: y,
                     key: pointkey,
-                    color: pointColor
+                    color: color
                   });
                 }
-              }
-            }
 
-            if (chartItem.type === "bar") {
-              if (pointDrop && visibility) {
-                if (dataViews.filter(function (v, i) {
+                if (dataViews !== null && dataViews !== void 0 && dataViews.filter(function (v, i) {
                   return v.index === index;
                 })[0]) {
                   var _pointColor = dataViews.filter(function (v, i) {
@@ -1173,29 +1241,50 @@ var ChartJS = function ChartJS(_ref2) {
                   });
                 }
               }
+
+              if (chartItem.type === "bar") {
+                if (pointAllDrop && (!dataViews || (dataViews === null || dataViews === void 0 ? void 0 : dataViews.length) <= 0)) {
+                  dataXY.push({
+                    x: x,
+                    y: y,
+                    key: pointkey,
+                    color: "red"
+                  });
+                }
+
+                if (dataViews !== null && dataViews !== void 0 && dataViews.filter(function (v, i) {
+                  return v.index === index;
+                })[0]) {
+                  var _pointColor2 = dataViews.filter(function (v, i) {
+                    return v.index === index;
+                  })[0].dropColor;
+                  dataXY.push({
+                    x: x,
+                    y: y,
+                    key: pointkey,
+                    color: _pointColor2
+                  });
+                }
+              }
+            };
+
+            //console.log(chartItem);
+            for (var index = 0; index < chartItemData.length; index++) {
+              var x;
+              var y;
+              var color;
+
+              _loop3(index);
             }
-          };
-
-          for (var index = 0; index < chartItemData.length; index++) {
-            var x;
-            var y;
-            var pheight;
-            var color;
-            var value;
-            var pointStyle;
-            var radius;
-            var textWidth;
-
-            _loop3(index);
           }
         } //animasyon ve data değişim kontrolu yapılıyor
 
 
         if (intervalFunction.filter(function (v, i) {
-          return v.id === "ChartJSafterRender";
+          return v.id === "ChartJPointDrop";
         })[0]) {
           var intervalItem = intervalFunction.filter(function (v, i) {
-            return v.id === "ChartJSafterRender";
+            return v.id === "ChartJPointDrop";
           })[0];
           var update = false;
           intervalItem.dataXY.forEach(function (v, i) {
@@ -1206,28 +1295,33 @@ var ChartJS = function ChartJS(_ref2) {
             }
           }); // değişim varsa 
 
-          if (update) {
+          if (update && dataXY.length > 0) {
             //animasyon duruduruluyor
             clearInterval(intervalItem.timeout);
             intervalFunction = []; //yeni anismasyon yükleniyor
 
             var timeout = onDrawDropCircle(chart, dataXY, 10, 2, 100);
             intervalFunction.push({
-              id: "ChartJSafterRender",
+              id: "ChartJPointDrop",
               dataXY: dataXY,
               timeout: timeout
             });
+          }
+
+          if (update && dataXY.length <= 0) {
+            clearInterval(intervalItem.timeout);
+            intervalFunction = [];
           }
         } //hiç anismasyon yok sa
 
 
         if (!intervalFunction.filter(function (v, i) {
-          return v.id === "ChartJSafterRender";
+          return v.id === "ChartJPointDrop";
         })[0] && dataXY.length > 0) {
           var _timeout = onDrawDropCircle(chart, dataXY, 10, 2, 100);
 
           intervalFunction.push({
-            id: "ChartJSafterRender",
+            id: "ChartJPointDrop",
             dataXY: dataXY,
             timeout: _timeout
           });
@@ -1236,7 +1330,7 @@ var ChartJS = function ChartJS(_ref2) {
     }];
 
     if (plugins !== null && plugins !== undefined) {
-      newplugins = newplugins.concat(plugins);
+      return newplugins.concat(plugins);
     }
 
     return newplugins;
@@ -1258,51 +1352,48 @@ var ChartJS = function ChartJS(_ref2) {
     chartmain.update();
   };
 
-  var canvas = (0, _react.useRef)();
-
-  var _useState = (0, _react.useState)(null),
-      _useState2 = _slicedToArray(_useState, 2),
-      chartmain = _useState2[0],
-      setChartmain = _useState2[1];
-
-  var _useState3 = (0, _react.useState)(null),
-      _useState4 = _slicedToArray(_useState3, 2),
-      charttype = _useState4[0],
-      setCharttype = _useState4[1];
-
   var ChartRender = function ChartRender() {
-    if (children === null && children === undefined) {
+    if (!children) {
       return null;
     }
 
-    if (canvas.current) {
-      setTimeout(function () {
-        var data = chartData();
-        var options = chartOptions();
-        plugins = chartPlugins();
+    if (canvas.current && !chartmain) {
+      var data = chartData();
+      var options = chartOptions();
+      plugins = chartPlugins();
 
-        if (chartmain) {
-          chartmain.destroy();
-          setChartmain(null);
-        }
+      if (chartmain) {
+        chartmain.destroy();
+        setChartmain(null);
+      }
 
-        var newchart = new _auto.default(canvas === null || canvas === void 0 ? void 0 : canvas.current, {
-          type: type,
-          data: data,
-          options: options,
-          plugins: plugins
-        });
-        newchart.update();
-        setChartmain(newchart);
-      }, 10);
+      var newchart = new _auto.default(canvas === null || canvas === void 0 ? void 0 : canvas.current, {
+        type: type,
+        data: data,
+        options: options,
+        plugins: plugins
+      });
+      setChartmain(newchart);
+      return;
     }
-  };
 
-  var ciz = false;
-  var draws = {
-    leftdivider: null,
-    rightdivider: null,
-    area: null
+    if (chartmain && children) {
+      intervalFunction.forEach(function (v, i) {
+        try {
+          clearInterval(v.timeout);
+        } catch (error) {}
+      });
+      intervalFunction = [];
+
+      var _data = chartData();
+
+      var _options = chartOptions();
+
+      chartmain.data = _data;
+      chartmain.options = _options;
+      chartmain.update();
+      console.log(chartmain);
+    }
   };
 
   var onChartDraws = function onChartDraws(ctx, v) {
@@ -1351,8 +1442,8 @@ var ChartJS = function ChartJS(_ref2) {
         right = _chartItem$chartArea.right,
         left = _chartItem$chartArea.left;
     chartItem.platform.addEventListener(chartItem, "mousedown", function (ev) {
-      ciz = true;
-      draws.leftdivider = {
+      setCiz(true);
+      var leftdivider = {
         x: ev.x,
         y: top,
         type: "leftdivider",
@@ -1360,10 +1451,13 @@ var ChartJS = function ChartJS(_ref2) {
         h: height,
         style: chartItem.ctx.fillStyle
       };
-      onChartDraws(chartItem.ctx, draws.leftdivider);
+      setDraws(Object.assign(draws, {
+        leftdivider: leftdivider
+      }));
+      onChartDraws(chartItem.ctx, leftdivider);
     });
     chartItem.platform.addEventListener(chartItem, "mouseup", function (ev) {
-      ciz = false;
+      setCiz(false);
       chartItem.clear();
       chartItem.update("none");
     });
@@ -1395,19 +1489,6 @@ var ChartJS = function ChartJS(_ref2) {
 
   (0, _react.useEffect)(function () {
     ChartRender();
-  }, []);
-  (0, _react.useEffect)(function () {
-    if (chartmain && children) {
-      intervalFunction.forEach(function (v, i) {
-        clearInterval(v.timeout);
-      });
-      intervalFunction = [];
-      var data = chartData();
-      var options = chartOptions();
-      chartmain.data = data;
-      chartmain.options = options;
-      chartmain.update();
-    }
   }, [children, width, height, chartjs, charttype]);
 
   var canvasSaveImage = function canvasSaveImage() {
@@ -1598,107 +1679,3 @@ var ChartJS = function ChartJS(_ref2) {
 };
 
 exports.ChartJS = ChartJS;
-
-var MathLines = /*#__PURE__*/function () {
-  function MathLines() {
-    _classCallCheck(this, MathLines);
-  }
-
-  _createClass(MathLines, [{
-    key: "addPoints",
-    value: function addPoints(id, x1, y1, x2, y2) {
-      this.points = [];
-
-      if (id === null) {
-        id = "id" + this.points.length;
-      }
-
-      this.points.push({
-        id: id,
-        x1: x1,
-        y1: y1,
-        x2: x2,
-        y2: y2
-      });
-    }
-  }, {
-    key: "twoPointsChecked",
-    value: function twoPointsChecked(id1, id2) {
-      if (this.points === undefined || this.points === null || this.points.length <= 0) {
-        return;
-      }
-
-      var point1 = this.points.filter(function (v, i) {
-        return v.id === id1;
-      })[0];
-      var point2 = this.points.filter(function (v, i) {
-        return v.id === id2;
-      })[0];
-      var m1 = (point1.y2 - point1.y1) / (point1.x2 - point1.x1);
-      var m2 = (point2.y2 - point2.y1) / (point2.x2 - point2.x1);
-      var y = (point2.y2 - point2.x2 * m2 - point1.y2 + point1.x2 * m1) / (m2 - m1);
-      var x = (y - point1.y2 + point1.x2 * m1) / m1;
-
-      if (x === 0 && y === 0) {
-        return {
-          x: x,
-          y: y,
-          to: false
-        };
-      }
-
-      return {
-        x: x,
-        y: y,
-        to: true
-      };
-    }
-  }, {
-    key: "pointLineUnder",
-    value: function pointLineUnder(x, y, id) {
-      if (this.points === undefined || this.points === null || this.points.length <= 0) {
-        return;
-      }
-
-      var point1 = this.points.filter(function (v, i) {
-        return v.id === id;
-      })[0];
-
-      if (point1 === undefined) {
-        console.log("points id and data add error !");
-        return null;
-      }
-
-      var m1 = (point1.y2 - point1.y1) / (point1.x2 - point1.x1);
-      var yPoint = m1 * (x - point1.x2) + point1.y2; //üstünde
-
-      if (y > yPoint) {
-        return {
-          x: x,
-          y: yPoint,
-          to: "on"
-        };
-      } //altında
-
-
-      if (y < yPoint) {
-        return {
-          x: x,
-          y: yPoint,
-          to: "under"
-        };
-      } //üzerinde
-
-
-      if (y === yPoint) {
-        return {
-          x: x,
-          y: yPoint,
-          to: "over"
-        };
-      }
-    }
-  }]);
-
-  return MathLines;
-}();

@@ -71,7 +71,7 @@ interface ChartJSProps{
      height?:string;
      pointText?:boolean;
      pointTextAbsvalue?:boolean;
-     children?:Array;
+     children?:Array<ChartJSNode>;
      mobil?:boolean;
      mobilMinSize?:number;
      ticksYcallback?:Function;
@@ -116,15 +116,15 @@ interface  ChartJSNodeProps{
      type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
      label?:string; //this.datatitle === undefined ? "veri" : this.datatitle,//line gibi dataların renk başlıkları aç ma kapamada
      order?:number; //this.order,// layer katmanı belirleme alt veye üstünde kaldığını gösterme 0 en üst sırayla alta doğru 1 2 3 chart sayısına göre
-     data?:Array; //this.data,//data
+     data?:Array<Number>; //this.data,//data
      lineAddViews:Array<pointViewProps>,//istenen yatay veya düşey value değerine yatay çizği ve değerin yazıdırılması
      dataViews?:Array<pointViewProps>;
      hidden?:boolean;
      //line bar  element konfigrasyonlar
-     backgroundColor?:string|Function|Array; //this.backgroundColor,//tarama rengi
-     defaultbackgroundColor?:string|Array; //this.backgroundColor,//tarama rengi
-     borderColor?:string|Function|Array; //this.borderColor,//çizgi rengi
-     borderWidth?:string|Function|Array; //this.borderWidth, //dış çiği kalılığı
+     backgroundColor?:string|Function|Array<String>; //this.backgroundColor,//tarama rengi
+     defaultbackgroundColor?:string|Array<String>; //this.backgroundColor,//tarama rengi
+     borderColor?:string|Function|Array<String>; //this.borderColor,//çizgi rengi
+     borderWidth?:string|Function|Array<String>; //this.borderWidth, //dış çiği kalılığı
      tension?:number; //this.lineSmooth ? 0.4 : 0.000001,//düz ya eğrisel çizgi
      fill?:"origin"| "start"|"end"|boolean; //this.fill,//altı tarama şekli
      spanGaps?: boolean;
@@ -140,7 +140,6 @@ interface  ChartJSNodeProps{
      borderDashOffset?:Function|string;
      radius?:number|Function; //this.radius,//point size,
      borderAlign?:string; //arc line
-     borderAlign?:string, //arc line
      hoverOffset?:string,
      bgColor?:string|Function;
      bdrColor?:string|Function;

@@ -1,4 +1,5 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import Chart from 'chart.js/auto';
 import XLSX from 'xlsx';
  
@@ -40,11 +41,69 @@ export function ChartJSNode({
     categoryPercentage = undefined, // grublarda  genişlik  %si  0-1 arasında dış çerceve
     barPercentage = undefined, // gerub içinde aldığı % göre %si   iç çerceve
     base = undefined,// çizim başlangıc değeri eksene bağlı olup eksen eksen den yüksek değerde olmalıdır.
-    linearGradient=undefined
+    linearGradient=undefined,
+     barThickness=undefined,
+     maxBarThickness=undefined,
+     minBarLength=undefined,
+     pointTextAllShow=false,
+     pointTextAddFirstValue=undefined,
+     pointTextAddLastValue=undefined,
+     pointText = false,
+     pointTextAbsvalue=false,
+     pointDrop=false,
+     pointAllDrop=false
 }) {
 
-    return {}
+    return {
+        type:type,
+        hidden:hidden,
+        indexAxis:indexAxis,
+        label:label,
+        order:order,
+        data:data,
+        dataViews:dataViews,
+        lineAddViews:lineAddViews,
+        id:id,
+        //line bar  element konfigrasyonlar
+        backgroundColor:backgroundColor,
+        borderColor:borderColor,
+        borderWidth:borderWidth,
+        tension:tension,
+        fill:fill,
+        spanGaps:spanGaps,
+        stepped:stepped,
+        hoverBorderWidth:hoverBorderWidth,
+        hoverBackgroundColor:hoverBackgroundColor,
+        //noktaların konfigrasyonları
+        pointStyle:pointStyle,
+        hitRadius:hitRadius,
+        hoverRadius:hoverRadius,
+        rotation:rotation,
+        borderDash:borderDash,
+        borderDashOffset:borderDashOffset,
+        radius:radius,
+        radiusValue:radiusValue,
+        borderAlign:borderAlign,
+        hoverOffset:hoverOffset,
+        bgColor:bgColor,
+        bdrColor:bdrColor,
+        categoryPercentage:categoryPercentage,
+        barPercentage:barPercentage,
+        base:base,
+        linearGradient:linearGradient,
+        barThickness:barThickness,
+        maxBarThickness:maxBarThickness,
+        minBarLength:minBarLength,
+        pointTextAllShow:pointTextAllShow,
+        pointTextAddFirstValue:pointTextAddFirstValue,
+        pointTextAddLastValue:pointTextAddLastValue,
+        pointText :pointText ,
+        pointTextAbsvalue:pointTextAbsvalue,
+        pointDrop:pointDrop,
+        pointAllDrop:pointAllDrop
+    }
 }
+
 
 /**
     *  benzersiz id oluşturma
@@ -116,8 +175,6 @@ export const ChartJS =  (
         yAxesLeftAdd = false,
         xAxesPosition = undefined,
         yAxesPosition = undefined,
-        pointText = false,
-        pointTextAbsvalue=false,
         mobil = false,
         mobilMinSize = 1024,
         children,
@@ -130,8 +187,6 @@ export const ChartJS =  (
         onClickLabel,
         intervalFunction=[],
         pluginsData=[],
-        pointDrop=false,
-        
         layoutPadding=undefined,
         labelsFont= {
             size: 12,
@@ -147,12 +202,24 @@ export const ChartJS =  (
         onChartOptions=(e)=>{ return e},
         downloadOptions=false,
         changeTypes=false,
-        className
+        className,
+        autoSkip=true,
+        autoSkipPadding=false,
+        maxLabelsRotation=undefined,
+        minLabelsRotation=undefined
       }
 ) => {
-    var id=0;
-    
-
+ 
+    const canvas = useRef();
+    const [chartmain, setChartmain] = useState(null);
+    const [charttype, setCharttype] = useState(null);
+    const [ciz, setCiz] = useState(false) ;
+    const [draws, setDraws] = useState({
+        leftdivider:null,
+        rightdivider:null,
+        area:null
+       }) ;
+     
 
     const datasets = [];
 
@@ -194,8 +261,6 @@ export const ChartJS =  (
         yAxesLeftAdd :yAxesLeftAdd ,
         xAxesPosition :xAxesPosition ,
         yAxesPosition :yAxesPosition ,
-        pointText :pointText ,
-        pointTextAbsvalue:pointTextAbsvalue,
         mobil :mobil ,
         mobilMinSize :mobilMinSize ,
         children:children,
@@ -203,7 +268,6 @@ export const ChartJS =  (
         ticksXcallback :ticksXcallback ,
         tooltipCallbacks :tooltipCallbacks ,
         style:style,
-        pointDrop:pointDrop,
         layoutPadding:layoutPadding,
         labelsFont:labelsFont,
         usePointStyleLegend:usePointStyleLegend,
@@ -212,7 +276,11 @@ export const ChartJS =  (
         onChartOptions:onChartOptions,
         downloadOptions:downloadOptions,
         changeTypes:changeTypes,
-        className:className
+        className:className,
+        autoSkip:autoSkip,
+        autoSkipPadding:autoSkipPadding,
+        maxLabelsRotation:maxLabelsRotation,
+        minLabelsRotation:minLabelsRotation,
     }
 
     const getHexRgbCode = (str) => {
@@ -243,7 +311,6 @@ export const ChartJS =  (
     }
     
    
-
     const chartNodeConvert = (newdataset) => {
 
         if(charttype){
@@ -279,9 +346,7 @@ export const ChartJS =  (
               // This case happens on initial chart load
               return null;
             }
-          const chartWidth = chartArea.right - chartArea.left;
-          const chartHeight = chartArea.bottom - chartArea.top;
-          
+         
             // Create the gradient because this is either the first render
             // or the size of the chart has changed
              
@@ -296,12 +361,11 @@ export const ChartJS =  (
  
         const poitnBackground = (contex) => {
 
-            var value = contex.raw;
+           
             const { dataset,chart } = contex;
-            var id = dataset.id;
-            var index = contex.index;
+             const Index = contex.index;
             //sadece görüntieneceklerde value olanları kapatıyoruz
-            var item = dataset.dataViews?.filter((v, i) => v.index === index)[0];
+            var item = dataset.dataViews?.filter((v, i) => v.index === Index)[0];
             if (item !== undefined) {
                 
                 if(dataset.linearGradient!==undefined){
@@ -319,40 +383,23 @@ export const ChartJS =  (
         }
 
         const pointRadius = (ctx) => {
-             var value = ctx.raw;
-            var index = ctx.index;
+            
+            const Index = ctx.index;
             const { dataset } = ctx;
-            var id = ctx.type;
-            //sadece görüntieneceklerde value olanları kapatıyoruz
-            var item = dataset.dataViews.filter((v, i) => v.index === index)[0];
+             //sadece görüntieneceklerde value olanları kapatıyoruz
+            var item = dataset.dataViews.filter((v, i) => v.index === Index)[0];
             if (item !== undefined) {
                 return item?.radius?item?.radius:8;
             }
             return dataset.radiusValue;
         }
 
-        //point text iptal olacak chart şekilleri
-        if ("linebarpie".indexOf(newdataset.type) === -1) {
-             indexAxis = undefined;
-             pointText = false;
-             newdataset.radius = undefined;
-        }
+        
 
-        if (newdataset.type === "pie") {
-            newdataset = {
-                type: newdataset.type,
-                label: newdataset.label,
-                data: newdataset.data,
-                backgroundColor: newdataset.backgroundColor,
-                hoverOffset: 20,
-                dataViews: newdataset.dataViews,
-            }
-
-            return newdataset;
-        }
+     
 
 
-        if (newdataset.dataViews !== undefined && newdataset.dataViews.length > 0) {
+        if (newdataset.dataViews && newdataset.dataViews?.length > 0) {
             newdataset.bgColor = newdataset.backgroundColor;
             newdataset.radius = pointRadius;
             newdataset.backgroundColor = poitnBackground;
@@ -363,6 +410,8 @@ export const ChartJS =  (
 
     }
  
+
+    
     const chartData = () => {
 
         for (const chartnode of React.Children.toArray(children)) {
@@ -380,7 +429,6 @@ export const ChartJS =  (
             datasets: datasets
         }
     }
-
     const chartOptions = () => {
         yAxesPosition = yAxesRightAdd ? "right" : yAxesPosition;
         yAxesPosition = yAxesLeftAdd ? "left" : yAxesPosition;
@@ -399,7 +447,7 @@ export const ChartJS =  (
 
         }
 
-        var options = {
+        const options = {
             indexAxis: indexAxis,
             responsiveAnimationDuration: 1000,
              responsive: responsive ,
@@ -464,6 +512,10 @@ export const ChartJS =  (
                         stepSize: xAxesstep,
                         font:xlabelsFont,
                         color:xlabelsFont.fontColor,
+                        autoSkip: indexAxis==="x"?autoSkip:true,
+                        autoSkipPadding:indexAxis==="x"?autoSkipPadding:false,
+                        maxRotation:indexAxis==="x"?maxLabelsRotation:undefined,
+                        minRotation:indexAxis==="x"?minLabelsRotation:undefined,
                     },
 
                 },
@@ -489,6 +541,10 @@ export const ChartJS =  (
                         stepSize: yAxesstep,
                         font:ylabelsFont,
                         color:ylabelsFont.fontColor,
+                        autoSkip: indexAxis==="y"?autoSkip:true,
+                        autoSkipPadding:indexAxis==="y"?autoSkipPadding:false,
+                        maxRotation:indexAxis==="y"?maxLabelsRotation:undefined,
+                        minRotation:indexAxis==="y"?minLabelsRotation:undefined,
                     }
                 },
                 // x1: {
@@ -644,22 +700,32 @@ export const ChartJS =  (
     
     }
     
+    const textPointCalc=(text,x,y,fontSize,canvasCtx,chartAreaValues)=>{
+        const w = (canvasCtx.measureText(text).width + 2)*0.5;
+        const textWidth = (canvasCtx.measureText(text).width + 2);
+        var b = 0;
+        var px = w + b;
+        var py = fontSize * 0.5 + 2;
+        if ((w + x) > chartAreaValues.right) {  //layout dışına çıkmaması için kaydırılıyor
+            b = w - x + chartAreaValues.right;
+            px = w + b;
+        }
+
+        return{px:px,py:py,b:b,width:w,textWidth:textWidth};
+    }
 
     const chartPlugins = () => {
 
-        let newplugins = [
+        const newplugins = [
             {
                 id: "ChartJSPointText",
                 afterDraw: function (chart, args, options) {
 
-                    if (pointText === false) {
-                        return;
-                    }
 
                     //console.log(chart);
                     //console.log(args);
                     //console.log(options);
-                    var ctx = chart.ctx;
+                    const ctx = chart.ctx;
                     // var chartArea = chart.chartArea;
                     //sol üst
                     // ctx.fillStyle = backgroundColor;
@@ -668,211 +734,210 @@ export const ChartJS =  (
                     const indexAxis = chart.config._config.options.indexAxis;
                     const { left, top, right, bottom, height, width } = chart.chartArea;
 
-                    for (let ind = 0; ind < metasets.length; ind++) {
-                        const chartItem = metasets[ind];
+                    for (const chartItem of metasets) {
+
                         const chartItemData = chartItem.data;
                         const parsed = chartItem._parsed;
                         const dataViews = chartItem._dataset.dataViews;
                         const lineAddViews = chartItem._dataset.lineAddViews;
-                        const hidden = chartItem._dataset.hidden;
-                        if (!chartItem) {
-                            return;
-                        }
-                        //console.log(chartItem);
-                        for (let index = 0; index < chartItemData.length; index++) {
+                        const pointTextAllShow = chartItem._dataset.pointTextAllShow;
+                        const pointTextAddFirstValue = chartItem._dataset.pointTextAddFirstValue ? chartItem._dataset.pointTextAddFirstValue : "";
+                        const pointTextAddLastValue = chartItem._dataset.pointTextAddLastValue ? chartItem._dataset.pointTextAddLastValue : "";
+                        let visibility =chartItem.visible;
+                       
+                        const pointText = chartItem._dataset.pointText;
+                        const pointTextAbsvalue = chartItem._dataset.pointTextAbsvalue;
+                        
+                        if (pointText&&visibility) {
+                            for (let index = 0; index < chartItemData.length; index++) {
 
 
-                            const point = chartItemData[index];
-                            //console.log(point);
-                            var x = point.x;
-                            var y = point.y;
-                            var pheight = point.height;
-                            var color = point.options.borderColor;
-                            var value = indexAxis === "x" ? parsed[index].y : parsed[index].x;
-                            var pointStyle = point.options.pointStyle;
-                            var radius = point.options.radius;
-                            var textWidth = ctx.measureText(value).width;
+                                //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
+                                ctx.save(); //kaydeder 
 
-                            //değerlerin hepsini pozitif yazıyoruz
-                            if (pointTextAbsvalue) {
-                                value = typeof value === "number" ? Math.abs(value) : value;
-                            }
+                                chartItem.type==="pie"&&console.log(chartItem);
 
-                            //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
-                            ctx.save(); //kaydeder 
+                                if (chartItem.type === "pie") {
+                                    const point = chartItemData[index];
+                                    const arcXY = ArcXYText(chartItemData[index]);
+                                    const pradius = 12;
+                                  
+                                    if (arcXY) {
 
-                            if (chartItem.type === "pie") {
-                                const arcXY = ArcXYText(chartItemData[index]);
-                                if (arcXY) {
-                                    // ctx.fillStyle = "#000";
-                                    // ctx.beginPath();
-                                    // ctx.moveTo(x,y);
-                                    // ctx.lineTo(arcXY.x,arcXY.y);
-                                    // ctx.stroke();
-                                    const total = chartItem.total;
-                                    value = parsed[index];
+                                        const total = chartItem.total;
+                                        const pieValue = parsed[index];
+                                        ctx.translate(arcXY.x, arcXY.y);
 
-                                    x = arcXY.x;
-                                    y = arcXY.y;
+                                        const valuelast = pointTextAddFirstValue + yuzde(total, pieValue) + pointTextAddLastValue;
+ 
+                                            ctx.font = `bold ${pradius ? pradius * 0.9 : 10}px sans-serif`
+                                            ctx.fillStyle = "#000";
+                                            ctx.textAlign = 'center';
+                                            ctx.fillText(valuelast, 0, 0);
+                                         
+                                    }
+                                }
 
-                                    ctx.translate(x, y);
+                                if (chartItem.type === "line") {
 
-                                    if (pointText && !chartItem.hidden) {
-                                        ctx.font = `bold ${radius ? radius : 14}px sans-serif`
+                                    const point = chartItemData[index];
+                                    //console.log(point);
+                                    var lx = point.x;
+                                    var ly = point.y;
+                                    var lheight = point.height;
+                                    var lcolor = point.options.borderColor;
+                                    var lvalue = indexAxis === "x" ? parsed[index].y : parsed[index].x;
+                                    var lpointStyle = point.options.pointStyle;
+                                    var lradius = point.options.radius;
+                                    var ltextWidth = ctx.measureText(lvalue).width;
+                                    var ltextHeight = ctx.measureText(lvalue).actualBoundingBoxDescent;
+                                    if (pointTextAbsvalue) {
+                                        lvalue = typeof lvalue === "number" ? Math.abs(lvalue) : lvalue;
+                                    }
+
+
+
+                                    if (lineAddViews) {
+
+                                        lineAddViews.forEach(element => {
+
+
+                                            var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
+
+                                            ctx.strokeStyle = element.backgroundColor;
+                                            ctx.beginPath();
+                                            ctx.moveTo(left, lineY);
+                                            ctx.lineTo(right, lineY);
+                                            ctx.stroke();
+
+                                        });
+
+                                    }
+
+
+
+                                    //dataViews
+                                    if (indexAxis === "x") {
+                                        ly = (ly + 2 * lradius) > bottom ? (ly - 2 * lradius) : (ly + 2 * lradius);
+                                        if ((lx - lradius) <= left) {
+                                            ly = ly - 2 * lradius;
+                                            lx = lx + 2 * lradius;// : lx-lradius*0.5;
+                                        }
+                                        lradius = 1.5 * lradius;
+
+                                    }
+                                    else {
+                                        lx = (lx + 2 * lradius) > right ? (lx - 2 * lradius) : (lx + 2 * lradius);
+
+                                    }
+                                    ctx.translate(lx, ly);
+
+
+                                    if (pointText) {
+                                        lradius = lradius < 13 ? 13 : lradius;
+                                        ctx.font = `${lradius}px Arial`
                                         ctx.fillStyle = "#000";
                                         ctx.textAlign = 'center';
-                                        ctx.fillText(yuzde(total, value), 0, 0);
-                                    }
-                                }
-                            }
 
-                            if (chartItem.type === "line") {
+                                        const valuelast = pointTextAddFirstValue + lvalue + pointTextAddLastValue;
 
-                                //console.log("line top")
-                                const k = (y - bottom) / value;
-                                //console.log(top)
-                                //console.log(bottom)
-                                //console.log(k)
-                                //lineAddViews
-                                if (lineAddViews) {
-
-                                    lineAddViews.forEach(element => {
-
-
-                                        var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
-
-                                        ctx.strokeStyle = element.backgroundColor;
-                                        ctx.beginPath();
-                                        ctx.moveTo(left, lineY);
-                                        ctx.lineTo(right, lineY);
-                                        ctx.stroke();
-
-                                    });
-
-                                }
-
-
-
-                                //dataViews
-                                if (indexAxis === "x") {
-                                    y = (y + 2 * radius) > bottom ? (y - 2 * radius) : (y + 2 * radius);
-                                    if ((x - radius) <= left) {
-                                        y = y - 2 * radius;
-                                        x = x + 2 * radius;// : x-radius*0.5;
-                                    }
-                                    radius = 1.5 * radius;
-
-                                }
-                                else {
-                                    x = (x + 2 * radius) > right ? (x - 2 * radius) : (x + 2 * radius);
-
-                                }
-                                ctx.translate(x, y);
-
-                                //  console.log(chartItem);
-                                //  console.log("chartItem.hidden");
-                                //  console.log(chartItem.hidden);
-
-                                if (pointText && hidden === false) {
-                                    radius = radius < 13 ? 13 : radius;
-                                    ctx.font = `${radius}px Arial`
-                                    ctx.fillStyle = "#000";
-                                    ctx.textAlign = 'center';
-
-
-                                    if (!dataViews) {
-                                        ctx.strokeStyle = "#000";
-                                        textWidth = ctx.measureText(value).width + 2;
-                                        ctx.fillText(value, 5, 0);
-                                        ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-
-                                    } else if (dataViews.filter((v, i) => v.index === index)[0]) {
-                                        var userValue = dataViews.filter((v, i) => v.index === index)[0].value;
-                                        var color = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
-                                        ctx.strokeStyle = color;
-                                        textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-                                        const w = textWidth * 0.5;
-                                        var b = 0;
-                                        var px = w + b;
-                                        var py = radius * 0.5 + 2;
-                                        if ((w + x) > right) {  //layout dışına çıkmaması için kaydırılıyor
-                                            b = w - x + right;
-                                            px = w + b;
+                                        if (pointTextAllShow && !dataViews || dataViews?.length <= 0) {
+                                            ctx.strokeStyle = "#000";
+                                            ctx.fillText(valuelast, 0, ltextHeight);
                                         }
-                                        ctx.strokeRect(-px, -py, textWidth, radius + 2);
-                                        ctx.fillText(userValue ? userValue : value, -b, 0);
-                                    }
 
-                                }
-                            }
-
-
-                            if (chartItem.type === "bar") {
-
-                                //lineAddViews
-                                if (lineAddViews) {
-
-
-                                    lineAddViews.forEach(element => {
-
-
-                                        var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
-                                        ctx.lineWidth = 2;
-                                        ctx.strokeStyle = element.backgroundColor;
-                                        ctx.beginPath();
-                                        ctx.moveTo(left + 5, lineY);
-                                        ctx.lineTo(right - 5, lineY);
-                                        ctx.stroke();
-                                        ctx.font = `${20}px Arial`
-                                        ctx.fillStyle = element.backgroundColor;
-                                        ctx.fillText("GSYH=" + element.value, left + 5, lineY + 15);
-                                    });
-
-                                }
-
-                                if (indexAxis === "x") {
-                                    ctx.translate(x, y);
-                                    ctx.rotate(-90 * Math.PI / 180);
-
-                                } else {
-                                    ctx.translate(x, y);
-                                    ctx.rotate(0 * Math.PI / 180);
-                                }
-
-                                if (pointText && !chartItem.hidden) {
-
-                                    radius = radius > 12 ? 12 : radius;
-                                    ctx.font = `${radius}px Arial`
-                                    ctx.fillStyle = "#000";
-                                    ctx.textAlign = 'center';
-
-
-                                    if (!dataViews) {
-                                        ctx.strokeStyle = "#000";
-                                        textWidth = ctx.measureText(value).width + 2;
-                                        ctx.fillText(value, 5, 0);
-                                        ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-
-                                    } else if (dataViews.filter((v, i) => v.index === index)[0]) {
-                                        var userValue = dataViews.filter((v, i) => v.index === index)[0].value;
-                                        var color = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
-                                        ctx.strokeStyle = color;
-                                        textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-                                        const w = textWidth * 0.5;
-                                        var b = 0;
-                                        var px = w + b;
-                                        var py = radius + 2;
-                                        if ((w + x) > right) {  //layout dışına çıkmaması için kaydırılıyor
-                                            b = w - x + right;
-                                            px = w + b;
+                                        if (!pointTextAllShow && dataViews?.filter((v, i) => v.index === index)[0]) {
+                                            const userValueLine = dataViews.filter((v, i) => v.index === index)[0].value;
+                                            const colorLine = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
+                                            ctx.strokeStyle = colorLine;
+                                            //yazını noktasının alan hesaplama ve noktayı belirleme
+                                            const itemCalc = textPointCalc(userValueLine ? userValueLine : lvalue, lx, ly, lradius, ctx, chart.chartArea)
+                                            ctx.strokeRect(-itemCalc.px, -itemCalc.py, itemCalc.width, lradius + 2);
+                                            ctx.fillText(userValueLine ? userValueLine : lvalue, -itemCalc.b, 0);
                                         }
-                                        ctx.strokeRect(0, 0, textWidth, radius + 2);
-                                        ctx.fillText(userValue ? userValue : value, w, 0);
+
                                     }
                                 }
-                            }
 
-                            ctx.restore();
+
+                                if (chartItem.type === "bar") {
+
+                                    const point = chartItemData[index];
+                                    var bx = point.x;
+                                    var by = point.y;
+                                    var bheight = point.height;
+                                    var bcolor = point.options.borderColor;
+                                    let bvalue = indexAxis === "x" ? parsed[index].y : parsed[index].x;
+                                    var bstyle = point.options.pointStyle;
+                                    var bradius = point.options.radius;
+                                    var btextWidth = ctx.measureText(bvalue).width;
+                                    var btextHeight = ctx.measureText(bvalue).actualBoundingBoxDescent;
+                                    //değerlerin hepsini pozitif yazıyoruz
+                                    if (pointTextAbsvalue) {
+                                        bvalue = typeof bvalue === "number" ? Math.abs(bvalue) : bvalue;
+                                    }
+
+
+                                    //lineAddViews
+                                    if (lineAddViews) {
+
+
+                                        lineAddViews.forEach(element => {
+
+
+                                            var lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
+                                            ctx.lineWidth = 2;
+                                            ctx.strokeStyle = element.backgroundColor;
+                                            ctx.beginPath();
+                                            ctx.moveTo(left + 5, lineY);
+                                            ctx.lineTo(right - 5, lineY);
+                                            ctx.stroke();
+                                            ctx.font = `${20}px Arial`
+                                            ctx.fillStyle = element.backgroundColor;
+                                            ctx.fillText("GSYH=" + element.value, left + 5, lineY + 15);
+                                        });
+
+                                    }
+
+                                    ctx.translate(bx, by);
+
+                                    if (indexAxis === "x") {
+                                        ctx.rotate(-90 * Math.PI / 180);
+                                    } else {
+                                        ctx.rotate(0 * Math.PI / 180);
+                                    }
+
+                                    if (pointText && !chartItem.hidden) {
+
+                                        bradius = bradius > 12 ? 12 : bradius;
+                                        ctx.font = `${bradius}px Arial`
+                                        ctx.fillStyle = "#000";
+                                        ctx.textAlign = 'center';
+
+                                        const valuelast = pointTextAddFirstValue + bvalue + pointTextAddLastValue;
+
+
+                                        if (pointTextAllShow && !dataViews || dataViews?.length <= 0) {
+                                            ctx.strokeStyle = "#000";
+                                            btextWidth = ctx.measureText(bvalue).width + 2;
+                                            ctx.fillText(valuelast, 5, 0);
+                                            ctx.strokeRect(-btextWidth * 0.5, -bradius * 0.5 - 2, btextWidth, bradius + 2);
+
+                                        }
+
+                                        if (dataViews?.filter((v, i) => v.index === index)[0]) {
+                                            const userValueBar = dataViews.filter((v, i) => v.index === index)[0].value;
+                                            var userColorBar = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
+                                            ctx.strokeStyle = userColorBar;
+                                            const itemCalc = textPointCalc(userValueBar ? userValueBar : bvalue, bx, by, bradius, ctx, chart.chartArea)
+                                            ctx.strokeRect(0, 0, itemCalc.textWidth, bradius + 2);
+                                            ctx.fillText(userValueBar ? userValueBar : bvalue, itemCalc.textWidth, 0);
+                                        }
+                                    }
+                                }
+
+                                ctx.restore();
+                            }
                         }
 
                     }
@@ -893,153 +958,152 @@ export const ChartJS =  (
 
                 }
             },
-            { id:"ChartJSafterRender",afterRender: function(chart, args, options) {
-      
-    
-              
+            {
+              id: "ChartJPointDrop",
+                afterRender: function (chart, args, options) {
 
-                if(pointDrop===false){
-                    return;
-                }
 
-               
-                const dataXY=[];
-                 
-               //console.log(chart);
-               //console.log(args);
-               //console.log(options);
-               var ctx = chart.ctx;
-               // var chartArea = chart.chartArea;
-               //sol üst
-              // ctx.fillStyle = backgroundColor;
-               //ctx.fillRect(chartArea.left, chartArea.top, (chartArea.right - chartArea.left), (chartArea.bottom - chartArea.top));
-               const metasets=chart._metasets;
-               const indexAxis=chart.config._config.options.indexAxis;
-               const {left,top,right,bottom,height,width}=chart.chartArea;
-               
-              for (let ind = 0; ind < metasets.length; ind++) {
-                 const chartItem=metasets[ind];
-                const chartItemData=chartItem.data;
-                const parsed=chartItem._parsed;
-                const label=chartItem.label;
-                const visibility=chartItem.hidden|chartItem.visible;
-                const dataViews=chartItem._dataset.dataViews;
-                 if(!chartItem){
-                    return;
-                }
-                //console.log(chartItem);
-                  for (let index = 0; index < chartItemData.length; index++) {
-                    
-            
-                      const point = chartItemData[index];
-                      //console.log(point);
-                      var x = point.x;
-                      var y = point.y;
-                      var pheight = point.height;
-                      var color = point.options.borderColor;
-                      var value = indexAxis === "x" ? parsed[index].y : parsed[index].x;
-                      var pointStyle = point.options.pointStyle;
-                      var radius = point.options.radius;
-                      var textWidth = ctx.measureText(value);
-                      const pointkey=label+ind+index;
-                        //değerlerin hepsini pozitif yazıyoruz
-                      if(pointTextAbsvalue){
-                          value=typeof value === "number"?Math.abs(value):value;
-                      }
+                  
+
+                    const dataXY = [];
+
+                    //console.log(chart);
+                    //console.log(args);
+                    //console.log(options);
+                    const ctx = chart.ctx;
+                    // var chartArea = chart.chartArea;
+                    //sol üst
+                    // ctx.fillStyle = backgroundColor;
+                    //ctx.fillRect(chartArea.left, chartArea.top, (chartArea.right - chartArea.left), (chartArea.bottom - chartArea.top));
+                    const metasets = chart._metasets;
+                    const IndexAxis = chart.config._config.options.indexAxis;
+                    //const {left,top,right,bottom,height,width}=chart.chartArea;
+
+                    for (let ind = 0; ind < metasets.length; ind++) {
+                        const chartItem = metasets[ind];
+                        const chartItemData = chartItem.data;
+                        const label = chartItem.label;
+                        const visibility =chartItem.visible;
+                        const dataViews = chartItem._dataset.dataViews;
+                        const pointDrop = chartItem._dataset.pointDrop;
+                        const pointAllDrop = chartItem._dataset.pointAllDrop;
+                        
                       
-            //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
-                     
-                      if (chartItem.type === "pie") {
-                         const arcXY = ArcXYText(chartItemData[index]);
-                          if (arcXY) {
-                             
-                              const total = chartItem.total;
-                              value = parsed[index];
-            
-                              x = arcXY.x;
-                              y = arcXY.y;
-            
-                             
-                              if (pointDrop && visibility) {
-                                 dataXY.push({x:x,y:y,key:pointkey,color:"red"})                    
-                              }
-                          }
+                        if (pointDrop && visibility) {
+                            //console.log(chartItem);
+                            for (let index = 0; index < chartItemData.length; index++) {
+
+
+                                const point = chartItemData[index];
+                                //console.log(point);
+                                var x = point.x;
+                                var y = point.y;
+                                var color = point.options.borderColor;
+                                const pointkey = label + ind + index;
+                                //değerlerin hepsini pozitif yazıyoruz
+
+
+                                //--------------------------------ÇİZİM BAŞLANGIÇ YERİ---------------------------------------------
+
+                                if (chartItem.type === "pie") {
+                                    const arcXY = ArcXYText(chartItemData[index]);
+                                    if (arcXY) {
+
+                                        x = arcXY.x;
+                                        y = arcXY.y;
+
+                                        if (pointAllDrop && (!dataViews || dataViews?.length <= 0)) {
+                                            dataXY.push({ x: x, y: y, key: pointkey, color: "red" })
+                                        }
+
+                                        if (dataViews?.filter((v, i) => v.index === index)[0]) {
+                                            const pointColor = dataViews.filter((v, i) => v.index === index)[0].dropColor;
+                                            dataXY.push({ x: x, y: y, key: pointkey, color: pointColor })
+                                        }
+                                    }
+                                }
+
+                                if (chartItem.type === "line") {
+
+
+                                    if (pointAllDrop && (!dataViews || dataViews?.length <= 0)) {
+                                        dataXY.push({ x: x, y: y, key: pointkey, color: color })
+                                    }
+
+                                    if (dataViews?.filter((v, i) => v.index === index)[0]) {
+                                        const pointColor = dataViews.filter((v, i) => v.index === index)[0].dropColor;
+                                        dataXY.push({ x: x, y: y, key: pointkey, color: pointColor })
+                                    }
+
+                                }
+
+
+                                if (chartItem.type === "bar") {
+
+
+                                    if (pointAllDrop && (!dataViews || dataViews?.length <= 0)) {
+                                        dataXY.push({ x: x, y: y, key: pointkey, color: "red" })
+                                    }
+
+                                    if (dataViews?.filter((v, i) => v.index === index)[0]) {
+                                        const pointColor = dataViews.filter((v, i) => v.index === index)[0].dropColor
+                                        dataXY.push({ x: x, y: y, key: pointkey, color: pointColor })
+
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
                     }
-            
-                      if (chartItem.type === "line") {
-                          
-                          if (pointDrop&&visibility) {
-                            
-                            if (dataViews.filter((v, i) => v.index === index)[0]) {
-                             const pointColor=dataViews.filter((v, i) => v.index === index)[0].dropColor;
-                                dataXY.push({x:x,y:y,key:pointkey,color:pointColor})                    
-            
+
+                    //animasyon ve data değişim kontrolu yapılıyor
+                    if (intervalFunction.filter((v, i) => v.id === "ChartJPointDrop")[0]) {
+                        const intervalItem = intervalFunction.filter((v, i) => v.id === "ChartJPointDrop")[0];
+                        var update = false;
+                        intervalItem.dataXY.forEach((v, i) => {
+                            if (v.x !== dataXY[i]?.x | v.y !== dataXY[i]?.y | v.key !== dataXY[i]?.key) {
+                                update = true;
                             }
+                        })
+
+
+                        // değişim varsa 
+                        if (update&&dataXY.length>0) {
+                            //animasyon duruduruluyor
+                            clearInterval(intervalItem.timeout);
+                            intervalFunction = [];
+                            //yeni anismasyon yükleniyor
+                            const timeout = onDrawDropCircle(chart, dataXY, 10, 2, 100);
+                            intervalFunction.push({ id: "ChartJPointDrop", dataXY: dataXY, timeout: timeout })
                         }
-                      }
-            
+                        if (update&&dataXY.length<=0) {
+                            clearInterval(intervalItem.timeout);
+                            intervalFunction = [];
+                        }
+
+                    }
+
+                    //hiç anismasyon yok sa
+                    if (!intervalFunction.filter((v, i) => v.id === "ChartJPointDrop")[0] && dataXY.length > 0) {
+                        const timeout = onDrawDropCircle(chart, dataXY, 10, 2, 100);
+                        intervalFunction.push({ id: "ChartJPointDrop", dataXY: dataXY, timeout: timeout })
+
+                    }
+
                      
-                      if (chartItem.type === "bar") {
-                          
-                          if (pointDrop&&visibility) {
-                               
-                            
-                            if (dataViews.filter((v, i) => v.index === index)[0]) {
-                                const pointColor=dataViews.filter((v, i) => v.index === index)[0].dropColor
-                                dataXY.push({x:x,y:y,key:pointkey,color:pointColor})                    
-             
-                            }
-                        }
-                      }
-                    
-                      
-                  }
-            
-              }
-               
-              //animasyon ve data değişim kontrolu yapılıyor
-              if(intervalFunction.filter((v,i)=>v.id==="ChartJSafterRender")[0]){
-                const intervalItem=intervalFunction.filter((v,i)=>v.id==="ChartJSafterRender")[0];
-                var update=false;
-                intervalItem.dataXY.forEach((v,i)=>{
-                   if(v.x!==dataXY[i]?.x | v.y!==dataXY[i]?.y | v.key!==dataXY[i]?.key){
-                       update=true;
-                   }
-                })
 
-
-                // değişim varsa 
-                if(update){
-                    //animasyon duruduruluyor
-                     clearInterval(intervalItem.timeout);
-                     intervalFunction=[];
-                     //yeni anismasyon yükleniyor
-                    const timeout=onDrawDropCircle(chart,dataXY,10,2,100);
-                    intervalFunction.push({id:"ChartJSafterRender",dataXY:dataXY,timeout:timeout})
-                }
-                
-             } 
-
-              //hiç anismasyon yok sa
-              if(!intervalFunction.filter((v,i)=>v.id==="ChartJSafterRender")[0]&&dataXY.length>0){
-                 const timeout=onDrawDropCircle(chart,dataXY,10,2,100);
-                 intervalFunction.push({id:"ChartJSafterRender",dataXY:dataXY,timeout:timeout})
-                 
-              }  
-            
-             
-            
-               }
-            
-            
+               } 
+            },
            
-            }
-            
-
-        ]
+           
+        ];
 
         if (plugins !== null && plugins !== undefined) {
-            newplugins = newplugins.concat(plugins);
+            return newplugins.concat(plugins);
         }
 
         return newplugins;
@@ -1063,19 +1127,16 @@ export const ChartJS =  (
         chartmain.update();
     }
 
-    const canvas = useRef();
-    const [chartmain, setChartmain] = useState(null);
-     const [charttype, setCharttype] = useState(null);
+  
+
     const ChartRender=()=>{
          
-        if(children===null&&children===undefined){
+        if(!children){
             return null;
         }
          
-        if(canvas.current){
-              
-              setTimeout(() => {
-               
+        if(canvas.current&&!chartmain){
+             
                 const data = chartData();
                 const options = chartOptions();
                 plugins = chartPlugins();
@@ -1086,32 +1147,46 @@ export const ChartJS =  (
                 }
         
 
-                var newchart = new Chart(canvas?.current, {
+                const newchart = new Chart(canvas?.current, {
                     type:type,
                     data:  data,
                     options: options ,
                     plugins: plugins
                 });
-
-                   newchart.update();
  
-
                      setChartmain(newchart);
-              }, 10);
-              
+              return; 
            
         }
         
-       
+        if(chartmain&&children){
+           
+            intervalFunction.forEach((v,i)=>{
+                    try {
+
+                        clearInterval(v.timeout);
+  
+                    } catch (error) {
+                          
+                    }
+
+            })
+
+            intervalFunction=[];
+             const data = chartData();
+             const options = chartOptions();
+              
+             chartmain.data=data;
+             chartmain.options=options;
+             
+             chartmain.update();
+             console.log(chartmain);
+         }
          
     }
 
-    var ciz=false;
-    var draws={
-        leftdivider:null,
-        rightdivider:null,
-        area:null
-       };
+ 
+
     const onChartDraws=(ctx,v)=>{
     
         ctx.save();
@@ -1152,14 +1227,15 @@ export const ChartJS =  (
         const {width,height,top,bottom,right,left} =chartItem.chartArea;
 
          chartItem.platform.addEventListener(chartItem,"mousedown",(ev)=>{         
-            ciz=true;
-            draws.leftdivider={x:ev.x,y:top,type:"leftdivider",w:0,h:height,style:chartItem.ctx.fillStyle};
-            onChartDraws(chartItem.ctx,draws.leftdivider);
+            setCiz(true);
+            const leftdivider={x:ev.x,y:top,type:"leftdivider",w:0,h:height,style:chartItem.ctx.fillStyle};
+            setDraws(Object.assign(draws,{leftdivider:leftdivider}));
+            onChartDraws(chartItem.ctx,leftdivider);
          });
 
          chartItem.platform.addEventListener(chartItem,"mouseup",(ev)=>{
             
-             ciz=false;
+             setCiz(false);
              chartItem.clear();
              chartItem.update("none");
          });
@@ -1195,34 +1271,10 @@ export const ChartJS =  (
     }
 
    
-   
-
     useEffect(() => {
-      
+  
         ChartRender();
- 
-    }, [ ])
- 
 
-    useEffect(() => {
-        if(chartmain&&children){
-           
-            intervalFunction.forEach((v,i)=>{
-
-                clearInterval(v.timeout);
-
-            })
-
-            intervalFunction=[];
-             const data = chartData();
-             const options = chartOptions();
-              
-             chartmain.data=data;
-             chartmain.options=options;
-             chartmain.update();
-              
-         }
-      
  
     }, [children,width,height,chartjs,charttype])
 
@@ -1346,64 +1398,4 @@ export const ChartJS =  (
 
 }
 
-
-
-
-class MathLines {
-
-    addPoints(id, x1, y1, x2, y2) {
-        this.points = [];
-        if (id === null) {
-            id = "id" + this.points.length;
-        }
-        this.points.push({ id: id, x1: x1, y1: y1, x2: x2, y2: y2 });
-    }
-
-    twoPointsChecked(id1, id2) {
-        if (this.points === undefined || this.points === null || this.points.length <= 0) {
-            return;
-        }
-        var point1 = this.points.filter((v, i) => v.id === id1)[0];
-        var point2 = this.points.filter((v, i) => v.id === id2)[0];
-
-        var m1 = (point1.y2 - point1.y1) / (point1.x2 - point1.x1);
-        var m2 = (point2.y2 - point2.y1) / (point2.x2 - point2.x1);
-
-        var y = (point2.y2 - point2.x2 * m2 - point1.y2 + point1.x2 * m1) / (m2 - m1);
-        var x = (y - point1.y2 + point1.x2 * m1) / m1;
-
-        if (x === 0 && y === 0) {
-            return { x: x, y: y, to: false }
-        }
-
-        return { x: x, y: y, to: true }
-
-    }
-
-    pointLineUnder(x, y, id) {
-        if (this.points === undefined || this.points === null || this.points.length <= 0) {
-            return;
-        }
-        var point1 = this.points.filter((v, i) => v.id === id)[0];
-        if (point1 === undefined) {
-            console.log("points id and data add error !");
-            return null;
-        }
-        var m1 = (point1.y2 - point1.y1) / (point1.x2 - point1.x1);
-        var yPoint = m1 * (x - point1.x2) + point1.y2;
-        //üstünde
-        if (y > yPoint) {
-            return { x: x, y: yPoint, to: "on" }
-        }
-        //altında
-        if (y < yPoint) {
-            return { x: x, y: yPoint, to: "under" }
-        }
-        //üzerinde
-        if (y === yPoint) {
-            return { x: x, y: yPoint, to: "over" }
-        }
-    }
-
-}
-
+ 

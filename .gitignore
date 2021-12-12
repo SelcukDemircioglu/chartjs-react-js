@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/src/chartjs-react-js/node_modules_ds
+/src/chartjs-react-js/node_modules
 /.pnp
 .pnp.js
 
