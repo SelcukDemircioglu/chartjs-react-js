@@ -19,7 +19,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "modulesdelete-install": "set MODULES=1 && node  filesDelete.js",
+    "modulesdelete": "set MODULES=2 && node  filesDelete.js"
   },
   "eslintConfig": {
     "extends": [

@@ -1,0 +1,31 @@
+.chartjs {
+    position: relative;
+}
+.chartjs-button {
+    margin-left: 1rem;
+    background-color: white;
+    border: 0px white solid;
+    box-shadow:0 0 0px 0px #00000085;
+    height: 2rem;
+    width: 2rem;
+}
+.chartjs-menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    justify-items: center;
+    height: auto;
+}
+.chartjs select {
+    margin-left: 0.5rem;
+     background-color: white;
+     border: 0px;
+    border-color: whitesmoke;
+}
+
+.chartjs select option {
+    
+    background-color: white;
+    border: 0.1px;
+    border-color: whitesmoke;
+}

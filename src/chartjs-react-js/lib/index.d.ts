@@ -47,14 +47,7 @@ interface  ChartJSNodeProps{
      barThickness?:number|string;
      maxBarThickness?:number;
      minBarLength?:number;
-     pointTextAllShow?:boolean;
-     pointTextAddFirstValue?:string;
-     pointTextAddLastValue?:string;
-     pointText?:boolean;
-     pointTextAbsvalue?:boolean;
-     pointDrop?:boolean;
-     pointAllDrop?:boolean;
-
+     
  }
 
 export  declare class ChartJSNode extends React.Component<ChartJSNodeProps,any> {}
@@ -70,7 +63,7 @@ type methodChange = React.ReactNode | ((props: methodProps) => React.ReactNode);
   
 interface ChartJSProps{
      title?:string;// baslik; this.title //en üst başlık
-     type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
+     type?:string|'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
      titleVisible?:boolean;
      backgroundColor?:string|object;
      align?:"start"|"center"|"end"; //this.align
@@ -129,7 +122,8 @@ interface ChartJSProps{
      yAxesPosition?:boolean|object;
      width?:string;
      height?:string;
-   
+     pointText?:boolean;
+     pointTextAbsvalue?:boolean;
      children?:[Array<React.ReactNode>];
      mobil?:boolean;
      mobilMinSize?:number;
@@ -139,7 +133,7 @@ interface ChartJSProps{
      style?:React.CSSProperties;
      print?:Number;
      canvasid?:String;
-   
+     pointDrop?:boolean;
      layoutPadding?:number|{left:number,right:number,top:number,bottom:number};
      onClickLabel(e: ChartEvent, legendItem: LegendItem, legend: Function):Function;
      labelsFont?:{
@@ -154,13 +148,15 @@ interface ChartJSProps{
       usePointStyleTooltip?:boolean;
       LegendPointStyle?:Function|"textrect"|'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded' | 'rectRot' | 'star' | 'triangle'|HTMLImageElement|HTMLCanvasElement;
       onChartOptions(e:methodProps):Function;
-      downloadOptions?:boolean;
-      changeTypes?:boolean;
+      isDownload?:boolean;
+      isChangeTypes?:boolean;
       className?:string;
       autoSkip?:boolean;
       autoSkipPadding?:boolean;
       maxLabelsRotation?:undefined;
       minLabelsRotation?:undefined;
+      isLineShowHide?:boolean;
+      chartTypes?:Array;
 }
 
 
