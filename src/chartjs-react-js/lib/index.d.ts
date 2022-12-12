@@ -9,6 +9,11 @@ interface pointViewProps {
      dropColor?:String;
 }
 interface  ChartJSNodeProps{
+     indexAxis?:"x"|"y";//"x"; this.indexAxis //yatay mı düşey mi chart belirleme
+     yAxisID ?:string;
+     xAxisID ?: string;
+     yAxisPosition?:"left"|"center"|"right"|"top"|"bottom";
+     xAxisPosition?:"top"|"center"|"bottom"|"left"|"right";
      id?:number|string;
      type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
      label?:string; //this.datatitle === undefined ? "veri" : this.datatitle,//line gibi dataların renk başlıkları aç ma kapamada
@@ -156,7 +161,9 @@ interface ChartJSProps{
       maxLabelsRotation?:undefined;
       minLabelsRotation?:undefined;
       isLineShowHide?:boolean;
-      chartTypes?:Array;
+      chartTypes?:Array<"line"|"bar"|"pie"|"polarArea"|"radar">;
+      isFloatingBar?:boolean;
+      isAxisCrossair?:boolean;
 }
 
 

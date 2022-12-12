@@ -1,3 +1,28 @@
+
+
+@font-face {
+    font-family: "Poppins-Bold";
+    src: url("Poppins-Bold.ttf");
+    src: url("Poppins-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: bold;
+  }
+  
+  @font-face {
+    font-family: "Poppins-Regular";
+    src: url("Poppins-Regular.ttf");
+    src: url("Poppins-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins-Light";
+    src: url("Poppins-Light.ttf");
+    src: url("Poppins-Light.ttf") format("truetype");
+    font-weight: lighter;
+    font-style: lighter;
+  }
+
 .chartjs {
     position: relative;
 }
