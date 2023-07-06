@@ -7,6 +7,24 @@ interface pointViewProps {
      index?:Number;
      backgroundColor?:String;
      dropColor?:String;
+     font?:Font;
+}
+
+interface Font {
+          size: number,
+          fontColor: string,
+          family:  string,
+          lineHeight:string,
+          style: "normal" | "italic" | "oblique" | "initial" | "inherit",
+          weight:100|200|300|400|500|600|700|800|900
+}
+
+interface TitleProps{
+     display:boolean,
+     align?:"start"|"center"|"end";
+     font?:Font,
+     padding?:number,
+     color?:string,
 }
 interface  ChartJSNodeProps{
      indexAxis?:"x"|"y";//"x"; this.indexAxis //yatay mı düşey mi chart belirleme
@@ -14,6 +32,8 @@ interface  ChartJSNodeProps{
      xAxisID ?: string;
      yAxisPosition?:"left"|"center"|"right"|"top"|"bottom";
      xAxisPosition?:"top"|"center"|"bottom"|"left"|"right";
+     yAxisTitle?:{text?:string}&TitleProps;
+     xAxisTitle?:{text?:string}&TitleProps;
      id?:number|string;
      type?: 'line' | 'bar' | 'radar' | 'doughnut' | 'polarArea' | 'bubble' | 'pie' | 'scatter';
      label?:string; //this.datatitle === undefined ? "veri" : this.datatitle,//line gibi dataların renk başlıkları aç ma kapamada
@@ -52,7 +72,16 @@ interface  ChartJSNodeProps{
      barThickness?:number|string;
      maxBarThickness?:number;
      minBarLength?:number;
-     
+     pointTextDecimalCount?:number;
+     pointTextDecimalChar?:string;
+     pointTextIsAbove?:boolean;
+     yAxesmin?:number|object;
+     yAxesmax?:number|object;
+     xAxesmin?:number|object;
+     xAxesmax?:number|object;
+     xGrid?:boolean;
+     yGrid?:boolean;
+     onDataViews?(index:number,value?:any):pointViewProps|undefined;
  }
 
 export  declare class ChartJSNode extends React.Component<ChartJSNodeProps,any> {}
@@ -164,6 +193,7 @@ interface ChartJSProps{
       chartTypes?:Array<"line"|"bar"|"pie"|"polarArea"|"radar">;
       isFloatingBar?:boolean;
       isAxisCrossair?:boolean;
+ 
 }
 
 

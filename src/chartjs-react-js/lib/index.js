@@ -4,42 +4,21 @@ import {  Plugin_AxisCrossair, Plugin_BarFloating, Plugin_LineAdd} from './plugi
 import Chart  from 'chart.js/auto';
 import SvgView from './SvgView';
 import "./index.css";
-
-const numberFormat=(nStr)=> {
-  if(typeof nStr ==="number"){
-      nStr=nStr.toString()
-  }
-  if(typeof nStr ==="string"){
-      const cvrt=Number(nStr);
-      if(isNaN(cvrt)){
-          return nStr;
-      }
-  }
-  if(isNaN(nStr)){
-      return 0;
-  }
-  let x = nStr.split(".");
-  let x1 = x[0];
-  let x2 = x.length > 1 ? "." + x[1] : "";
-  let rgx = /(\d+)(\d{3})/;
-  while (rgx.test(x1)) {
-    x1 = x1.replace(rgx, "$1" + " " + "$2");
-  }
-  return x1 + x2;
-}
-
+import { sayiFormatla } from './utils';
+ 
 export function ChartJSNode({
-  type = "line",
+  type = undefined,
   hidden = true,
   yAxisID = undefined,
   yAxisPosition="left",
   xAxisID = undefined,
   xAxisPosition="bottom",
-  indexAxis = "x", //-->this.props.indexAxis,//yatay ve düşey grafik görünümü için
+  indexAxis = undefined, //-->this.props.indexAxis,//yatay ve düşey grafik görünümü için
   label = undefined, //-->this.datatitle === undefined  "veri" = this.datatitle,//line gibi dataların renk başlıkları aç ma kapamada
   order = undefined, //-->this.order,// layer katmanı belirleme alt veye üstünde kaldığını gösterme 0 en üst sırayla alta doğru 1 2 3 chart sayısına göre
   data = [], //-->this.data
   dataViews = [],
+  onDataViews=(index,value)=>{ return null},
   lineAddViews = [],
   id = Math.round(Math.random() * 1000),
   //line bar  element konfigrasyonlar
@@ -72,6 +51,17 @@ export function ChartJSNode({
   barThickness = undefined,
   maxBarThickness = undefined,
   minBarLength = undefined,
+  pointTextDecimalCount = 2,
+  pointTextDecimalChar = ".",
+  pointTextIsAbove = false,
+  yAxesmin=undefined,
+  yAxesmax=undefined,
+  xAxesmin=undefined,
+  xAxesmax=undefined,
+  yAxisTitle=undefined,
+  xAxisTitle=undefined,
+  xGrid=false,
+  yGrid=false,
 }) {
   return {
     yAxisID : yAxisID,
@@ -117,11 +107,23 @@ export function ChartJSNode({
     barThickness: barThickness,
     maxBarThickness: maxBarThickness,
     minBarLength: minBarLength,
+    pointTextDecimalCount: pointTextDecimalCount,
+    pointTextDecimalChar: pointTextDecimalChar,
+    pointTextIsAbove: pointTextIsAbove,
+    onDataViews:onDataViews,
+    yAxesmin:yAxesmin,
+    yAxesmax:yAxesmax,
+    xAxesmin:xAxesmin,
+    xAxesmax:xAxesmax,
+    yAxisTitle:yAxisTitle,
+    xAxisTitle:xAxisTitle,
+    xGrid:xGrid,
+    yGrid:yGrid,
   };
 }
 
 /**
-    *  
+    *  benzersiz id oluşturma
     * @returns 
     */
  export const generateUid=()=>{
@@ -132,7 +134,7 @@ export const ChartJS = memo ((
     {
         title = undefined,// basliknull, title //en üst başlık
         titleVisible = true,
-        type = "line",
+        type = undefined,
         align = "center", //align
         position = 'top',// position baslikkonumunull, //başlık konumu  type PositionType:stringnull,// 'left' | 'right' | 'top' | 'bottom' | 'chartArea'null,
         titleFont = {
@@ -384,30 +386,55 @@ export const ChartJS = memo ((
         }
        
  
-        const poitnBackground = (contex) => {
- 
-            let value = contex.raw;
-            const { dataset,chart } = contex;
-            let id = dataset.id;
+        //  element ve point style   dolgu rengi
+        const poitnBackground = (contex, val) => {
+                
+            const  dataset  = contex.chart.data.datasets[contex.datasetIndex];
             let index = contex.index;
             //sadece görüntieneceklerde value olanları kapatıyoruz
             let item = dataset.dataViews?.filter((v, i) => v.index === index)[0];
             if (item !== undefined) {
                 
                 if(dataset.linearGradient!==undefined){
-                    return onlinearGradient(chart,dataset.linearGradient);
+                    return onlinearGradient(contex.chart,dataset.linearGradient);
                 }
                 
                 return item?.backgroundColor;
             }
 
             if(dataset.linearGradient!==undefined){
-                return onlinearGradient(chart,dataset.linearGradient);
+                return onlinearGradient(contex.chart,dataset.linearGradient);
             }
 
             return dataset.bgColor;
         }
 
+           //  element ve point style   çerceve rengi
+        const poitnBorderColor = (contex, val) => {
+          
+
+          const  dataset  = contex.chart.data.datasets[contex.datasetIndex];
+             
+          let index = contex.p0DataIndex;
+          //sadece görüntieneceklerde value olanları kapatıyoruz
+          // let item = dataset.dataViews?.filter((v, i) => v.index === index)[0];
+          // if (item !== undefined) {
+              
+          //     if(dataset.linearGradient!==undefined){
+          //         return onlinearGradient(contex.chart,dataset.linearGradient);
+          //     }
+              
+          //     return item?.borderColor??item?.backgroundColor??"transparent";
+          // }
+
+          // if(dataset.linearGradient!==undefined){
+          //     return onlinearGradient(contex.chart,dataset.linearGradient);
+          // }
+
+          return dataset.bgColor;
+      }
+
+       //  element ve point style  boyutu
         const pointRadius = (ctx) => {
              let value = ctx.raw;
             let index = ctx.index;
@@ -416,10 +443,12 @@ export const ChartJS = memo ((
             //sadece görüntieneceklerde value olanları kapatıyoruz
             let item = dataset.dataViews.filter((v, i) => v.index === index)[0];
             if (item !== undefined) {
-                return item?.radius?item?.radius:8;
+                return item?.radius??8;
             }
             return dataset.radiusValue;
         }
+
+   
 
         //point text iptal olacak chart şekilleri
         if ("linebarpie".indexOf(newdataset.type) === -1) {
@@ -445,7 +474,12 @@ export const ChartJS = memo ((
         if (newdataset.dataViews !== undefined && newdataset.dataViews.length > 0) {
             newdataset.bgColor = newdataset.backgroundColor;
             newdataset.radius = pointRadius;
-            newdataset.backgroundColor = poitnBackground;
+            newdataset.backgroundColor=poitnBackground;
+            newdataset.borderColor=poitnBackground;
+            newdataset.spanGaps= true;
+            newdataset.segment= {
+              borderColor: poitnBorderColor,
+            }
         }
 
         return newdataset;
@@ -475,31 +509,7 @@ export const ChartJS = memo ((
 
     const chartOptions = (data) => {
  
-        const newAxeslist={};
-        
-        data?.datasets&&data.datasets.forEach(item=>{
-            
-            if (item.yAxisID !== "y" && item.yAxisID&&!newAxeslist[item.yAxisID]) {
-              const yAxis = {
-                display: true,
-                position: item.yAxesPosition,
-                grid: {
-                  drawOnChartArea: true, // only want the grid lines for one axis to show up
-                },
-              };
-              newAxeslist[item.yAxisID] = yAxis;
-            }
-            if (item.xAxisID !== "x" && item.xAxisID&&!newAxeslist[item.xAxisID]) {
-              const xAxis = {
-                display: true,
-                position: item.xAxesPosition,
-                grid: {
-                  drawOnChartArea: true, // only want the grid lines for one axis to show up
-                },
-              };
-              newAxeslist[item.xAxisID] = xAxis;
-            }
-        });
+      
           
 
         yAxesPosition = yAxesRightAdd ? "right" : yAxesPosition;
@@ -519,7 +529,7 @@ export const ChartJS = memo ((
 
         }
 
-        let options = {
+        const options = {
           indexAxis: indexAxis,
           responsiveAnimationDuration: 1000,
           responsive: responsive,
@@ -555,78 +565,152 @@ export const ChartJS = memo ((
                 font: labelsFont,
                 color: labelsFont.fontColor,
                 pointStyle: LegendPointStyle,
+                generateLabels:(chart,item)=>{
+                 
+                  const legendItems=chart._plugins._init.find(x=>x.plugin.id==="legend").plugin?.defaults?.labels?.generateLabels(chart);;
+                
+                  return chart._metasets.map((item,ind)=>{
+                    const dataset=item._dataset;
+                    const legendItem=legendItems[ind];
+                    //dataviews olması durumunda legend karda renk düzenini doğru hale getirmek
+                    legendItem.fillStyle=typeof dataset.backgroundColor ==="function"?dataset.bgColor:dataset.backgroundColor;
+                    legendItem.strokeStyle=typeof dataset.borderColor ==="function"?dataset.bgColor:dataset.borderColor;
+                    return legendItem;
+                  })
+
+                  
+                }
               },
             },
           },
           scales: {
-            x: {
-              display: xtitle === undefined ? false : true,
-              stacked: xstacked,
-              min: xAxesmin,
-              max: xAxesmax,
-              position: xAxesPosition,
-              backgroundColor: xlabelBackground,
-              grid: {
-                display: xgrid,
-              },
-              title: {
-                display: xtitle === undefined ? false : true,
-                text: xtitle === null ? "" : xtitle,
-                padding: 4,
-                color: xtitleColor,
-              },
-              ticks: {
-                callback: ticksXcallback,
-                display: xtitle === undefined ? false : true,
-                stepSize: xAxesstep,
-                font: xlabelsFont,
-                color: xlabelsFont.fontColor,
-                autoSkip: indexAxis === "x" ? autoSkip : true,
-                autoSkipPadding: indexAxis === "x" ? autoSkipPadding : false,
-                maxRotation: indexAxis === "x" ? maxLabelsRotation : undefined,
-                minRotation: indexAxis === "x" ? minLabelsRotation : undefined,
-              },
-            },
-            y: {
-              display: xtitle === undefined ? false : true,
-              stacked: ystacked,
-              position: yAxesPosition,
-              min: yAxesmin,
-              max: yAxesmax,
-              backgroundColor: ylabelBackground,
-              grid: {
-                display: ygrid === undefined ? true : ygrid,
-              },
-              title: {
-                display: ytitle === undefined ? false : true,
-                text: ytitle === null ? "" : ytitle,
-                padding: 4,
-                color: ytitleColor,
-              },
-              ticks: {
-                callback: ticksYcallback,
-                display: ytitle === undefined ? false : true,
-                stepSize: yAxesstep,
-                font: ylabelsFont,
-                color: ylabelsFont.fontColor,
-                autoSkip: indexAxis === "y" ? autoSkip : true,
-                autoSkipPadding: indexAxis === "y" ? autoSkipPadding : false,
-                maxRotation: indexAxis === "y" ? maxLabelsRotation : undefined,
-                minRotation: indexAxis === "y" ? minLabelsRotation : undefined,
-              },
-            }             
+            x:{display:false},
+            y:{display:false},
           },
         };
 
+           
+       
+         
+       if(data?.datasets&&data?.datasets.length>0){
+         for(const dataset of data.datasets){
+            if(dataset.type==="pie"||dataset.type==="polar"||dataset.type==="doughnut"){
+               delete options.plugins.legend.labels;
+               setCharttype(dataset.type);
+              continue;
+            }
+          const tempAxisY= {
+            display:  true,
+            stacked: ystacked,
+            position: yAxesPosition,
+            backgroundColor: ylabelBackground,
+            grid: {
+              display:true,
+            },
+            title: {
+              display: true,
+              padding: 4,
+              color: ytitleColor,
+            },
+            ticks: {
+              
+               callback: ticksYcallback,
+              align:"center",
+              display:  true,
+              stepSize: yAxesstep,
+              font: ylabelsFont,
+              color: ylabelsFont.fontColor,
+              autoSkip: indexAxis === "y" ? autoSkip : true,
+              autoSkipPadding: indexAxis === "y" ? autoSkipPadding : false,
+              maxRotation: indexAxis === "y" ? maxLabelsRotation : undefined,
+              minRotation: indexAxis === "y" ? minLabelsRotation : undefined,
+            } 
+          };
+          const tempAxisX=  {
+            display:  true,
+            stacked: xstacked,
+            position: xAxesPosition,
+            backgroundColor: xlabelBackground,
+            grid: {
+              display: true,
+            },
+            title: {
+              display:   true,
+              padding: 4,
+              color: xtitleColor,
+            },
+            ticks: {
+              callback: ticksXcallback,
+              display: true,
+              stepSize: xAxesstep,
+              align:"center",
+              font: xlabelsFont,
+              color: xlabelsFont.fontColor,
+              autoSkip: indexAxis === "x" ? autoSkip : true,
+              autoSkipPadding: indexAxis === "x" ? autoSkipPadding : false,
+              maxRotation: indexAxis === "x" ? maxLabelsRotation : undefined,
+              minRotation: indexAxis === "x" ? minLabelsRotation : undefined,
+            },
+           
+          }
+              //  farklı aynı AxisId den farklı max ve min var sa 
+              const myMax= data.datasets.filter(x=>x.yAxisID===dataset.yAxisID).map(x=>x?.yAxesmax??yAxesmax);
+              const myMin= data.datasets.filter(x=>x.yAxisID===dataset.yAxisID).map(x=>x?.yAxesmin??yAxesmin);
+              const mxMax= data.datasets.filter(x=>x.xAxisID===dataset.xAxisID).map(x=>x?.xAxesmax??xAxesmax);
+              const mxMin= data.datasets.filter(x=>x.xAxisID===dataset.xAxisID).map(x=>x?.xAxesmin??xAxesmin);
+              if(indexAxis==="x"){
+                tempAxisY.max=isNaN(Math.max(...myMax))?undefined:Math.max(...myMax);
+                tempAxisY.min=isNaN(Math.min(...myMin))?undefined:Math.min(...myMin);
+              }
+              if(indexAxis==="y"){
+                tempAxisX.max=isNaN(Math.max(...mxMax))?undefined:Math.max(...mxMax);
+                tempAxisX.min=isNaN(Math.min(...mxMin))?undefined:Math.min(...mxMin);
+              }
+              
+             
+
+            if((dataset.yAxisID === "y"||!dataset.yAxisID)&&! options.scales["y1"] ){
+              tempAxisY.position=dataset?.yAxisPosition??yAxesPosition;
+              tempAxisY.title=dataset.yAxisTitle;
+              tempAxisY.grid.display=dataset.yGrid??false;
+              options.scales["y1"]=tempAxisY;
+            }
+           
+            if((dataset.xAxisID === "x"||!dataset.xAxisID) &&! options.scales["x1"]){
+             
+              tempAxisX.position=dataset?.xAxisPosition??xAxesPosition;
+              tempAxisX.title=dataset.xAxisTitle;
+              tempAxisX.grid.display=dataset.xGrid??false;
+
+              options.scales["x1"]=tempAxisX;
+            }
+
+            if (dataset.yAxisID !== "y" && dataset.yAxisID&&! options.scales[dataset.yAxisID]) {
+             
+              tempAxisY.position=dataset?.yAxisPosition??yAxesPosition;
+              tempAxisY.title=dataset.yAxisTitle;
+              tempAxisY.grid.display=dataset.yGrid??false;  
+              options.scales[dataset.yAxisID]=tempAxisY;
+               
+            }
+
+            if (dataset.xAxisID !== "x" && dataset.xAxisID&&! options.scales[dataset.xAxisID]) {
+             
+              tempAxisX.position=dataset?.xAxisPosition??xAxesPosition;
+              tempAxisX.title=dataset.xAxisTitle;
+              tempAxisX.grid.display=dataset.xGrid??false;
+              options.scales[dataset.xAxisID]=tempAxisX;
+            }
+        }
+       }
+       
+      console.log(options)
+;           
+       
 
         return options;
     }
-
-    function beforePrintHandler () {
-        for (let id in Chart.instances) {
-            Chart.instances[id].resize();
-        }
-    }
+ 
 
     const ArcXYText = (data) => {
 
@@ -738,8 +822,75 @@ export const ChartJS = memo ((
         
     
     }
-    
 
+    const onPointCalc = (p1,p2,width,height) => {
+        
+        
+
+    }
+    
+    
+    const numberDecimalFixed = (value = 0, count = 2, pointTextDecimalChar = ".") => {
+      if (count === 0) {
+        return Number.parseInt(value);
+      } else {
+        return (Math.round(value * Math.pow(10, count)) / Math.pow(10, count))
+          .toFixed(count)
+          .replaceAll(".", pointTextDecimalChar);
+      }
+    };
+
+    const getShortFont=(font={})=>{
+     const def={
+      size: 12,
+      family:  "Arial",
+      weight:"bold"
+    }
+    font=font??def;
+
+    return  `${font.weight} ${font.size}px ${font.family}   `;
+  
+  }
+
+    const onPointTextCompare = (chart,datasetIndex,dataIndex) => {
+        const indexAxis = chart.config._config.options.indexAxis;
+       const { left, top, right, bottom, height, width } = chart.chartArea;
+        const ctx = chart.ctx;
+       const metasets = chart._metasets;
+       const points=metasets.map((dataset,i)=>{
+            
+          let value = dataset.indexAxis === "x" ? dataset._parsed[dataIndex].y : dataset._parsed[dataIndex].x;
+          let textWidth = ctx.measureText(value).width;
+          let textHeight = ctx.measureText(value).fontBoundingBoxAscent;
+          let x = dataset.data[dataIndex].x;
+          let y = dataset.data[dataIndex].y;
+
+          return {x,y,textHeight,textWidth,value}
+       });
+
+       const currentPoint=points[datasetIndex];
+       points.sort((a, b) => b.y - a.y)
+
+       if(points[points.length-1].value===currentPoint.value){
+      
+         return 1;
+
+       }
+
+       if(points[0].value===currentPoint.value){
+      
+        return -1;
+
+      }
+
+      
+        return 0;
+
+       
+     
+
+    }
+    
     const chartPlugins = () => {
 
       let newplugins = [
@@ -761,29 +912,41 @@ export const ChartJS = memo ((
             const metasets = chart._metasets;
             const indexAxis = chart.config._config.options.indexAxis;
             const { left, top, right, bottom, height, width } = chart.chartArea;
-
+          
+            const countItems=metasets.length;
+            let datasetIndex=0;
             for (const chartItem of metasets) {
+ 
               const chartItemData = chartItem.data;
               const parsed = chartItem._parsed;
               const dataViews = chartItem._dataset.dataViews;
               const lineAddViews = chartItem._dataset.lineAddViews;
-              const hidden = chartItem._dataset.hidden;
+              const hidden = chartItem.hidden;
+              const pointTextDecimalCount = chartItem._dataset.pointTextDecimalCount;
+              const pointTextDecimalChar = chartItem._dataset.pointTextDecimalChar;
+              const pointTextIsAbove = chartItem._dataset.pointTextIsAbove;
+              const onDataViews=chartItem._dataset.onDataViews;
+              const isDataViews = chartItem._dataset?.dataViews?.length>0 ||onDataViews;
               if (!chartItem) {
                 return;
               }
-              //console.log(chartItem);
-              for (let index = 0; index < chartItemData.length; index++) {
-                const point = chartItemData[index];
-                //console.log(point);
+             
+
+
+                
+              for (const point of chartItemData) {
                 let x = point.x;
                 let y = point.y;
+                const index=point?.$context?.dataIndex ||chartItemData.findIndex(x=>x===point)
                 let pheight = point.height;
                 let color = point.options.borderColor;
                 let value = indexAxis === "x" ? parsed[index].y : parsed[index].x;
                 let pointStyle = point.options.pointStyle;
                 let radius = point.options.radius;
                 let textWidth = ctx.measureText(value).width;
-
+                let textHeight = ctx.measureText(value).fontBoundingBoxAscent;
+              
+                const ItemDataViews=dataViews?.find(x=>x.index===index)||(typeof onDataViews==="function"?onDataViews(index,value):null);
                 //değerlerin hepsini pozitif yazıyoruz
                 if (pointTextAbsvalue) {
                   value = typeof value === "number" ? Math.abs(value) : value;
@@ -795,19 +958,11 @@ export const ChartJS = memo ((
                 if (chartItem.type === "pie") {
                   const arcXY = ArcXYText(chartItemData[index]);
                   if (arcXY) {
-                    // ctx.fillStyle = "#000";
-                    // ctx.beginPath();
-                    // ctx.moveTo(x,y);
-                    // ctx.lineTo(arcXY.x,arcXY.y);
-                    // ctx.stroke();
                     const total = chartItem.total;
                     value = parsed[index];
-
                     x = arcXY.x;
                     y = arcXY.y;
-
                     ctx.translate(x, y);
-
                     if (pointText && !chartItem.hidden) {
                       ctx.font = `bold ${radius ? radius : 14}px sans-serif`;
                       ctx.fillStyle = "#000";
@@ -818,8 +973,8 @@ export const ChartJS = memo ((
                 }
 
                 if (chartItem.type === "line") {
-                  //console.log("line top")
-                  const k = (y - bottom) / value;
+                  ctx.strokeStyle = "transparent";
+                
                   //console.log(top)
                   //console.log(bottom)
                   //console.log(k)
@@ -836,56 +991,63 @@ export const ChartJS = memo ((
                     });
                   }
 
-                  //dataViews
-                  if (indexAxis === "x") {
-                    y = y + 2 * radius > bottom ? y - 2 * radius : y + 2 * radius;
-                    if (x - radius <= left) {
-                      y = y - 2 * radius;
-                      x = x + 2 * radius; // : x-radius*0.5;
-                    }
-                    radius = 1.5 * radius;
-                  } else {
-                    x = x + 2 * radius > right ? x - 2 * radius : x + 2 * radius;
-                  }
+                 
                   ctx.translate(x, y);
-
-                  //  console.log(chartItem);
-                  //  console.log("chartItem.hidden");
-                  //  console.log(chartItem.hidden);
-
-                  if (pointText && hidden === false) {
-                    radius = radius < 13 ? 13 : radius;
-                    ctx.font = `${radius}px Arial`;
+                  
+              
+                  if (pointText && !hidden ) {
+                    
+                    
                     ctx.fillStyle = "#000";
                     ctx.textAlign = "center";
 
-                    if (!dataViews) {
+                    if (!ItemDataViews&&!isDataViews) {
                       ctx.strokeStyle = "#000";
                       textWidth = ctx.measureText(value).width + 2;
-                      ctx.fillText(value, 5, 0);
+                      const fixedvalue = numberDecimalFixed(value, pointTextDecimalCount, pointTextDecimalChar);
+
+                      ctx.fillText(fixedvalue, 5, 0);
                       ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-                    } else if (dataViews.filter((v, i) => v.index === index)[0]) {
-                      let userValue = dataViews.filter((v, i) => v.index === index)[0].value;
-                      let color = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
-                      ctx.strokeStyle = color;
+                    } 
+                    
+                    if (ItemDataViews) {
+                      let userValue = ItemDataViews.value;
+                      let color = ItemDataViews.backgroundColor;
+                      ctx.strokeStyle = color??"TRANSPARENT";
                       textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-                      const w = textWidth * 0.5;
+
+                       
+                     
+                      const w = textWidth ;
                       let b = 0;
-                      let px = w + b;
-                      let py = radius * 0.5 + 2;
-                      if ((w + x) > right) {
+                      let px = 0;
+                      let py = 0;
+                      if (w + x > right) {
                         //layout dışına çıkmaması için kaydırılıyor
-                        b = w - x + right;
-                        px = w + b;
+                         px=-textWidth*0.25
                       }
-                      ctx.strokeRect(-px, -py, textWidth, radius + 2);
-                      ctx.fillText(userValue ? userValue : value, -b, 0);
+                       
+                      
+                      const position=onPointTextCompare(chart,datasetIndex,index);
+
+                       if(position===-1){
+                          py=textHeight+radius;
+                       }
+                    
+                       if(position===1){
+                         py=-radius-textHeight;
+                      }
+
+                      const fixedvalue = numberDecimalFixed(userValue ?? value, pointTextDecimalCount, pointTextDecimalChar);
+                      ctx.font =getShortFont(ItemDataViews?.font??null);
+                      ctx.fillText(fixedvalue, px,py);
                     }
                   }
                 }
 
                 if (chartItem.type === "bar") {
-                  //lineAddViews
+                  ctx.strokeStyle = "transparent";
+                   
                   if (lineAddViews) {
                     lineAddViews.forEach((element) => {
                       let lineY = calcY(chartItemData[0], chartItemData[1], parsed[0].y, parsed[1].y, element.value);
@@ -900,51 +1062,75 @@ export const ChartJS = memo ((
                       ctx.fillText("GSYH=" + element.value, left + 5, lineY + 15);
                     });
                   }
-
+                  
                   if (indexAxis === "x") {
-                    ctx.translate(x, y);
-                    ctx.rotate((-90 * Math.PI) / 180);
+                      ctx.translate(x, y);
+                    // ctx.rotate((-90 * Math.PI) / 180);
                   } else {
                     ctx.translate(x, y);
                     ctx.rotate((0 * Math.PI) / 180);
                   }
+                   
+                  if (pointText && !hidden) {
+                     
+                  
+                    const fixedvalue = numberDecimalFixed(value, pointTextDecimalCount, pointTextDecimalChar);
 
-                  if (pointText && !chartItem.hidden) {
-                    radius = radius > 12 ? 12 : radius;
-                    ctx.font = `${radius}px Arial`;
-                    ctx.fillStyle = "#000";
-                    ctx.textAlign = "center";
-                    value=numberFormat(value);
-                    if (!dataViews) {
+                    if (!ItemDataViews&&!isDataViews) {
                       ctx.strokeStyle = "#000";
                       textWidth = ctx.measureText(value).width + 2;
-                      ctx.fillText(value, textWidth*0.5+2, 0);
+                      textHeight = ctx.measureText(value).fontBoundingBoxAscent + 2;
+                     
+                      ctx.fillText(fixedvalue, textWidth*0.5+2, 0);
                       ctx.strokeRect(-textWidth * 0.5, -radius * 0.5 - 2, textWidth, radius + 2);
-                    } else if (dataViews.filter((v, i) => v.index === index)[0]) {
-                      let userValue = dataViews.filter((v, i) => v.index === index)[0].value;
-                      let color = dataViews.filter((v, i) => v.index === index)[0].backgroundColor;
-                      ctx.strokeStyle = color;
+                    } 
+                    
+                    if (ItemDataViews) {
+                      const userValue = ItemDataViews.value;
+
+                    
+
                       textWidth = ctx.measureText(userValue ? userValue : value).width + 2;
-                      const w = textWidth * 0.5;
+                      textHeight = ctx.measureText(value).fontBoundingBoxAscent + 2;
+
+                      const w = textWidth ;
                       let b = 0;
-                      let px = w + b;
-                      let py = radius + 2;
+                      let px = 0;
+                      let py = 0;
                       if (w + x > right) {
                         //layout dışına çıkmaması için kaydırılıyor
-                        b = w - x + right;
-                        px = w + b;
+                         px=-textWidth*0.25
                       }
-                      ctx.strokeRect(0, 0, textWidth, radius + 2);
-                      
-                     
                        
-                      ctx.fillText(userValue ? userValue : value, w, 0);
+                      const fixedvalue = numberDecimalFixed(
+                        userValue ?? value,
+                        pointTextDecimalCount,
+                        pointTextDecimalChar
+                      );
+                      
+                      
+                      const position=onPointTextCompare(chart,datasetIndex,index);
+
+                       if(position===-1){
+                          py=textHeight*0.5;
+                       }
+                    
+                       if(position===1){
+                         py=0;
+                      }
+
+                      ctx.font =getShortFont(ItemDataViews?.font??null);
+                      ctx.fillStyle = "#000";
+                      ctx.textAlign = "center";
+                      ctx.fillText(fixedvalue, px, py);
                     }
                   }
                 }
 
                 ctx.restore();
+                 
               }
+              datasetIndex++;
             }
           },
         },
@@ -980,20 +1166,23 @@ export const ChartJS = memo ((
             const metasets = chart._metasets;
             const indexAxis = chart.config._config.options.indexAxis;
             const { left, top, right, bottom, height, width } = chart.chartArea;
-
-            for (let ind = 0; ind < metasets.length; ind++) {
-              const chartItem = metasets[ind];
+            let ind = 0;
+            for (const chartItem of metasets) {
+              
               const chartItemData = chartItem.data;
               const parsed = chartItem._parsed;
               const label = chartItem.label;
               const visibility = chartItem.hidden | chartItem.visible;
               const dataViews = chartItem._dataset.dataViews;
+              const pointTextDecimalCount = chartItem._dataset.pointTextDecimalCount;
+              const pointTextDecimalChar = chartItem._dataset.pointTextDecimalChar;
+              const pointTextIsAbove = chartItem._dataset.pointTextIsAbove;
               if (!chartItem) {
                 return;
               }
               //console.log(chartItem);
-              for (let index = 0; index < chartItemData.length; index++) {
-                const point = chartItemData[index];
+              let index = 0;
+              for (const point of chartItemData) {
                 //console.log(point);
                 let x = point.x;
                 let y = point.y;
@@ -1043,7 +1232,10 @@ export const ChartJS = memo ((
                     }
                   }
                 }
+
+                index++;
               }
+              ind++;
             }
 
             //animasyon ve data değişim kontrolu yapılıyor
@@ -1094,127 +1286,14 @@ export const ChartJS = memo ((
 
 
 
-    const addData=(label, data)=> {
-        chartmain.data.labels.push(label);
-        chartmain.data.datasets.forEach((dataset) => {
-            dataset.data.push(data);
-        });
-        chartmain.update();
-    }
-    
-    const removeData=(data) =>{
-        chartmain.data.labels.pop();
-        chartmain.data.datasets.forEach((dataset) => {
-            dataset.data.pop();
-        });
-        chartmain.update();
-    }
+  
 
     const canvas = useRef();
     const [chartmain, setChartmain] = useState(null);
-    const [charttype, setCharttype] = useState(null);
+    const [charttype, setCharttype] = useState(type);
 
-   
+    
      
-  
-    
-
-    let ciz=false;
-    let draws={
-        leftdivider:null,
-        rightdivider:null,
-        area:null
-       };
-    const onChartDraws=(ctx,v)=>{
-    
-        ctx.save();
-        switch (v.type) {
-          case "leftdivider":
-            ctx.fillStyle = 'black';
-            ctx.beginPath();
-            ctx.setLineDash([5,5])
-            ctx.moveTo(v.x, v.y);
-            ctx.lineTo(v.x, v.y+v.h);
-            ctx.stroke();
-            break;
-          case "rightdivider":
-            ctx.fillStyle = 'black';
-            ctx.beginPath();
-            ctx.setLineDash([5,5])
-            ctx.moveTo(v.x, v.y);
-            ctx.lineTo(v.x, v.y+v.h);
-            ctx.stroke();
-            break;
-          case "area":
-            ctx.beginPath();
-            ctx.fillStyle = v.style;
-            ctx.rect(v.x, v.y, v.w, v.h);
-            ctx.fill();
-            break;
-        
-          default:
-            break;
-        }
-        ctx.restore();
-        
-     }
-     
-    const chartAddEvents=(chartItem= new Chart())=>{
-        
-    
-        const {width,height,top,bottom,right,left} =chartItem.chartArea;
-
-         chartItem.platform.addEventListener(chartItem,"mousedown",(ev)=>{         
-            ciz=true;
-            draws.leftdivider={x:ev.x,y:top,type:"leftdivider",w:0,h:height,style:chartItem.ctx.fillStyle};
-            onChartDraws(chartItem.ctx,draws.leftdivider);
-         });
-
-         chartItem.platform.addEventListener(chartItem,"mouseup",(ev)=>{
-            
-             ciz=false;
-             chartItem.clear();
-             chartItem.update("none");
-         });
- 
-    
-         chartItem.platform.addEventListener(chartItem,"mousemove",(ev)=>{
-            chartItem.clear();
-            chartItem.stop();
-            chartItem.update("none");
-
- 
-           
-           if(draws.leftdivider!==null&&ciz){
-             onChartDraws(chartItem.ctx,draws.leftdivider);
- 
-             let w =ev.x-draws.leftdivider.x;
-             let h =ev.y-draws.leftdivider.y;
-             chartItem.ctx.beginPath();
-             chartItem.ctx.fillStyle = 'rgba(0, 157, 255,0.3)';
-             chartItem.ctx.rect(draws.leftdivider.x, top, w, height);
-             chartItem.ctx.fill();
- 
-             draws.rightdivider={x:ev.x,y:top,type:"rightdivider",w:0,h:height,style:chartItem.ctx.fillStyle};
-             
-             onChartDraws(chartItem.ctx,draws.rightdivider);
-   
-            
-           }
-            
- 
-         });
-
-    }
-
-   
-   
-     
- 
-
-
-  
-
     const canvasSaveImage=()=>{
 
         if(!canvas?.current){
@@ -1290,7 +1369,7 @@ export const ChartJS = memo ((
          })
         
        } catch (error) {
-        console.log(error);
+         console.log(error)
        }
         
     
@@ -1309,18 +1388,7 @@ export const ChartJS = memo ((
     
 
 
-    const onChangeType = () => { 
-
-            const index=chartTypes.findIndex(v=>v===charttype)+1;
-
-            if(index<=chartTypes.length-1){
-                setCharttype(chartTypes[index]);
-            }else{
-                setCharttype(chartTypes[0]);
-            }
-
-     }
-  
+   
  
      const chartLinesShowHide = () => {
         if (chartmain) {
@@ -1336,54 +1404,48 @@ export const ChartJS = memo ((
 
       useEffect(() => {
         try {
-            const data = chartData();
-            const options = chartOptions();
-            const _plugins = chartPlugins();
-            let chartStatus = Chart.getChart(canvas?.current); // <canvas> id
-            if (chartStatus !== undefined) {
-               chartStatus.destroy();
-            }
-            let newchart = new Chart(canvas?.current, {
-              type:charttype,
-              data: data,
-              options: options,
-              plugins: _plugins,
-            });
-            setChartmain(newchart);
-          } catch (error) {
-            console.log(error);
-           }
-      }, [ ]) 
 
- 
-      useEffect(() => {
-        const ChartRender = () => {
-          if (canvas?.current) {
+            if(!canvas?.current){
+              return;
+            }
+
             if (children === null && children === undefined) {
               return null;
             }
 
-            intervalFunction = [];
             const data = chartData();
-            const options = chartOptions();
+            const options = chartOptions(data);
             const _plugins = chartPlugins();
-            //  Yüklenmişse sadece güncelle
-            if (chartmain && children) {
+            // let chartStatus = Chart.getChart(canvas?.current); // <canvas> id
+            // if (chartStatus !== undefined) {
+            //    chartStatus.destroy();
+            // }
+            
+            if(!chartmain){
+              let newchart = new Chart(canvas?.current, {
+                 data: data,
+                 options: options,
+                 plugins: _plugins,
+              });
+              setChartmain(newchart);
+            }else{
               intervalFunction?.forEach((v, i) => {
                 clearInterval(v.timeout);
               });
+              chartmain.reset();
+              chartmain.config.type=charttype;
               chartmain.data = data;
               chartmain.options = options;
               chartmain.update();
-            } 
-          }
-        };
+            }
+            
+             
+          } catch (error) {
+            console.log(error);
+           }
+      }, [chartjs,chartmain,charttype]) 
 
-        ChartRender();
-      }, [chartjs,chartmain,charttype]);
-
-    
-   
+  
     const Svglist={
         "line":<SvgView name="chart-line" height={"2rem"} fill="#007bff"  />,
         "bar":<SvgView name="chart-bar" height={"2rem"} fill="#007bff"  />,

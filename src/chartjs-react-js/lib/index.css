@@ -41,14 +41,14 @@
     justify-items: center;
     height: auto;
 }
-.chartjs select {
+.chartjs>select {
     margin-left: 0.5rem;
      background-color: white;
      border: 0px;
     border-color: whitesmoke;
 }
 
-.chartjs select option {
+.chartjs>select>option {
     
     background-color: white;
     border: 0.1px;
